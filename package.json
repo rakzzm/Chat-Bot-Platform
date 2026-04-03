@@ -1,0 +1,28 @@
+{
+  "name": "chat-bot-platform",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI-powered chat bot platform builder for SMEs",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm run dev --workspace=@chat-bot-platform/backend",
+    "dev:frontend": "npm run dev --workspace=@chat-bot-platform/frontend",
+    "build": "npm run build --workspaces --if-present",
+    "build:backend": "npm run build --workspace=@chat-bot-platform/backend",
+    "build:frontend": "npm run build --workspace=@chat-bot-platform/frontend",
+    "start": "npm run start --workspace=@chat-bot-platform/backend",
+    "lint": "npm run lint --workspaces --if-present",
+    "db:generate": "npm run db:generate --workspace=@chat-bot-platform/backend",
+    "db:push": "npm run db:push --workspace=@chat-bot-platform/backend",
+    "db:migrate": "npm run db:migrate --workspace=@chat-bot-platform/backend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
