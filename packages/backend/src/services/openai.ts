@@ -2,7 +2,12 @@ import OpenAI from 'openai';
 import { Bot, Message } from '@prisma/client';
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || '',
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: process.env.OPENROUTER_API_KEY || '',
+  defaultHeaders: {
+    'HTTP-Referer': process.env.APP_URL || 'http://localhost:3001',
+    'X-Title': 'Chat Bot Platform',
+  },
 });
 
 export async function getChatResponse(
@@ -20,7 +25,7 @@ export async function getChatResponse(
   ];
 
   const response = await openai.chat.completions.create({
-    model: bot.model || 'gpt-3.5-turbo',
+    model: bot.model || 'qwen/qwen3.6-plus:free',
     messages: openaiMessages,
     max_tokens: 1024,
     temperature: 0.7,

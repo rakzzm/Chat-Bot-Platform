@@ -7,7 +7,7 @@ AI-powered chat bot platform builder for SMEs. Create, configure, and deploy cus
 - **Backend**: Node.js, Express, TypeScript, Prisma ORM, WebSocket
 - **Frontend**: React, TypeScript, Vite, TailwindCSS, Zustand
 - **Database**: SQLite (dev), PostgreSQL (prod-ready)
-- **AI**: OpenAI API (GPT models), extensible to other providers
+- **AI**: OpenRouter API (Qwen, Gemini, Llama, Claude, GPT), multi-model support
 
 ## Project Structure
 
@@ -47,6 +47,7 @@ npm install
 
 # Set up environment variables
 cp packages/backend/.env.example packages/backend/.env
+# Add your OPENROUTER_API_KEY (get one at https://openrouter.ai)
 
 # Initialize database
 npm run db:generate
@@ -69,7 +70,7 @@ docker compose up --build
 
 - User authentication (register/login with JWT)
 - Bot builder with custom system prompts
-- Multiple AI model support (GPT-3.5, GPT-4, Claude)
+- Multiple AI model support via OpenRouter (Qwen, Gemini, Llama, Claude, GPT)
 - Real-time chat via WebSocket
 - Conversation history
 - Responsive UI with TailwindCSS
