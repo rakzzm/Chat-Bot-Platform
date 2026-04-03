@@ -17,7 +17,8 @@
     "lint": "npm run lint --workspaces --if-present",
     "db:generate": "npm run db:generate --workspace=@chat-bot-platform/backend",
     "db:push": "npm run db:push --workspace=@chat-bot-platform/backend",
-    "db:migrate": "npm run db:migrate --workspace=@chat-bot-platform/backend"
+    "db:migrate": "npm run db:migrate --workspace=@chat-bot-platform/backend",
+    "setup": "node setup.js"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

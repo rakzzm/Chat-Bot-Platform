@@ -10,14 +10,15 @@ interface BotForm {
 }
 
 const MODELS = [
-  'qwen/qwen3.6-plus:free',
-  'qwen/qwen3-coder:free',
-  'qwen/qwen-plus:free',
-  'google/gemini-2.5-flash:free',
-  'meta-llama/llama-3.3-70b-instruct:free',
-  'mistralai/mistral-small-3.1-24b-instruct:free',
-  'anthropic/claude-3.5-sonnet',
-  'openai/gpt-4o',
+  'openai/gpt-3.5-turbo',
+  'openai/gpt-4',
+  'openai/gpt-4-turbo',
+  'anthropic/claude-3-sonnet',
+  'anthropic/claude-3-haiku',
+  'anthropic/claude-3-opus',
+  'google/gemini-pro',
+  'meta-llama/llama-3-70b-instruct',
+  'qwen/qwen-2.5-72b-instruct',
 ];
 
 export default function BotBuilder() {
@@ -27,7 +28,7 @@ export default function BotBuilder() {
     name: '',
     description: '',
     systemPrompt: 'You are a helpful assistant.',
-    model: 'qwen/qwen3.6-plus:free',
+    model: 'gpt-3.5-turbo',
   });
   const [saving, setSaving] = useState(false);
 

@@ -45,9 +45,8 @@ AI-powered chat bot platform builder for SMEs. Create, configure, and deploy cus
 # Install dependencies
 npm install
 
-# Set up environment variables
-cp packages/backend/.env.example packages/backend/.env
-# Add your OPENROUTER_API_KEY (get one at https://openrouter.ai)
+# Run interactive setup (prompts for OpenRouter API key)
+npm run setup
 
 # Initialize database
 npm run db:generate
@@ -55,6 +54,19 @@ npm run db:push
 
 # Start development servers
 npm run dev
+```
+
+Or set the API key manually:
+
+```bash
+cp packages/backend/.env.example packages/backend/.env
+# Edit .env and add your OPENROUTER_API_KEY (get one at https://openrouter.ai)
+```
+
+**Quick CLI one-liner to set the API key:**
+
+```bash
+echo 'OPENROUTER_API_KEY="sk-or-v1-your-key-here"' > packages/backend/.env
 ```
 
 - Backend: http://localhost:3001

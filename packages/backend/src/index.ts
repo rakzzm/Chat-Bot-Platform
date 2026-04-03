@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 
+import { connectDB } from './utils/database';
 import { authRouter } from './routes/auth';
 import { botRouter } from './routes/bots';
 import { conversationRouter } from './routes/conversations';
@@ -35,6 +36,8 @@ const wss = new WebSocketServer({ server, path: '/ws' });
 
 setupWebSocket(wss);
 
-server.listen(PORT, () => {
-  console.log(`Backend running on http://localhost:${PORT}`);
+connectDB().then(() => {
+  server.listen(PORT, () => {
+    console.log(`Backend running on http://localhost:${PORT}`);
+  });
 });
