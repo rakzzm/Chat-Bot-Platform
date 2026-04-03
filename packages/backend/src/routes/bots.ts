@@ -23,7 +23,7 @@ botRouter.get('/', async (req: Request, res: Response) => {
       where: { userId },
       orderBy: { createdAt: 'desc' },
     });
-    res.json(bots);
+    res.json(bots.map(bot => ({ ...bot, settings: bot.settings ? JSON.parse(bot.settings) : null })));
   } catch {
     res.status(500).json({ error: 'Failed to fetch bots' });
   }
@@ -35,7 +35,7 @@ botRouter.get('/:id', async (req: Request, res: Response) => {
       where: { id: req.params.id, userId: req.userId! },
     });
     if (!bot) return res.status(404).json({ error: 'Bot not found' });
-    res.json(bot);
+    res.json({ ...bot, settings: bot.settings ? JSON.parse(bot.settings) : null });
   } catch {
     res.status(500).json({ error: 'Failed to fetch bot' });
   }
@@ -45,9 +45,13 @@ botRouter.post('/', async (req: Request, res: Response) => {
   try {
     const data = createBotSchema.parse(req.body);
     const bot = await prisma.bot.create({
-      data: { ...data, userId: req.userId! },
+      data: {
+        ...data,
+        userId: req.userId!,
+        settings: data.settings ? JSON.stringify(data.settings) : null,
+      },
     });
-    res.status(201).json(bot);
+    res.status(201).json({ ...bot, settings: bot.settings ? JSON.parse(bot.settings) : null });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ error: error.errors });
@@ -63,11 +67,18 @@ botRouter.patch('/:id', async (req: Request, res: Response) => {
     });
     if (!bot) return res.status(404).json({ error: 'Bot not found' });
 
+    const updateData = { ...req.body };
+    if (updateData.settings !== undefined) {
+      updateData.settings = typeof updateData.settings === 'string'
+        ? updateData.settings
+        : JSON.stringify(updateData.settings);
+    }
+
     const updated = await prisma.bot.update({
       where: { id: req.params.id },
-      data: req.body,
+      data: updateData,
     });
-    res.json(updated);
+    res.json({ ...updated, settings: updated.settings ? JSON.parse(updated.settings) : null });
   } catch {
     res.status(500).json({ error: 'Failed to update bot' });
   }
