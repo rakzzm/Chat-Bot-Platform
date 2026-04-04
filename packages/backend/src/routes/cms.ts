@@ -36,7 +36,13 @@ cmsRouter.post('/knowledge', async (req: Request, res: Response) => {
   try {
     const data = createKBSchema.parse(req.body);
     const kb = await prisma.knowledgeBase.create({
-      data: { ...data, userId: req.userId!, fields: JSON.stringify(data.fields), entries: JSON.stringify(data.entries) },
+      data: {
+        title: data.title,
+        contentType: data.contentType,
+        userId: req.userId!,
+        fields: JSON.stringify(data.fields),
+        entries: JSON.stringify(data.entries),
+      },
     });
     res.status(201).json({ ...kb, fields: JSON.parse(kb.fields), entries: JSON.parse(kb.entries) });
   } catch (error) {
@@ -89,7 +95,12 @@ cmsRouter.post('/context-variables', async (req: Request, res: Response) => {
   try {
     const data = createCVSchema.parse(req.body);
     const cv = await prisma.contextVariable.create({
-      data: { ...data, userId: req.userId! },
+      data: {
+        name: data.name,
+        permanent: data.permanent,
+        defaultValue: data.defaultValue,
+        userId: req.userId!,
+      },
     });
     res.status(201).json(cv);
   } catch (error) {

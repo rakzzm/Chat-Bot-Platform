@@ -93,7 +93,12 @@ flowRouter.post('/flows', async (req: Request, res: Response) => {
   try {
     const data = createFlowSchema.parse(req.body);
     const flow = await prisma.flow.create({
-      data: { ...data, userId: req.userId! },
+      data: {
+        label: data.label,
+        botId: data.botId,
+        userId: req.userId!,
+        isStart: data.isStart,
+      },
     });
     res.status(201).json(flow);
   } catch (error) {
@@ -141,7 +146,15 @@ flowRouter.delete('/flows/:id', async (req: Request, res: Response) => {
 flowRouter.post('/flows/nodes', async (req: Request, res: Response) => {
   try {
     const data = createNodeSchema.parse(req.body);
-    const node = await prisma.flowNode.create({ data });
+    const node = await prisma.flowNode.create({
+      data: {
+        flowId: data.flowId,
+        type: data.type,
+        positionX: data.positionX,
+        positionY: data.positionY,
+        data: data.data,
+      },
+    });
     res.status(201).json(node);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -178,7 +191,13 @@ flowRouter.delete('/flows/nodes/:id', async (req: Request, res: Response) => {
 flowRouter.post('/flows/connections', async (req: Request, res: Response) => {
   try {
     const data = createConnectionSchema.parse(req.body);
-    const connection = await prisma.flowConnection.create({ data });
+    const connection = await prisma.flowConnection.create({
+      data: {
+        sourceNodeId: data.sourceNodeId,
+        targetNodeId: data.targetNodeId,
+        label: data.label,
+      },
+    });
     res.status(201).json(connection);
   } catch (error) {
     if (error instanceof z.ZodError) {

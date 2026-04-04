@@ -36,7 +36,7 @@ nluRouter.post('/nlu/intents', async (req: Request, res: Response) => {
     const data = createIntentSchema.parse(req.body);
     const intent = await prisma.nluIntent.create({
       data: {
-        ...data,
+        name: data.name,
         userId: req.userId!,
         examples: JSON.stringify(data.examples),
         responses: data.responses ? JSON.stringify(data.responses) : null,
@@ -96,7 +96,11 @@ nluRouter.post('/nlu/entities', async (req: Request, res: Response) => {
   try {
     const data = createEntitySchema.parse(req.body);
     const entity = await prisma.nluEntity.create({
-      data: { ...data, userId: req.userId!, values: JSON.stringify(data.values) },
+      data: {
+        name: data.name,
+        userId: req.userId!,
+        values: JSON.stringify(data.values),
+      },
     });
     res.status(201).json({ ...entity, values: JSON.parse(entity.values) });
   } catch (error) {

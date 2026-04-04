@@ -46,7 +46,11 @@ botRouter.post('/', async (req: Request, res: Response) => {
     const data = createBotSchema.parse(req.body);
     const bot = await prisma.bot.create({
       data: {
-        ...data,
+        name: data.name,
+        description: data.description,
+        systemPrompt: data.systemPrompt,
+        avatar: data.avatar,
+        model: data.model,
         userId: req.userId!,
         settings: data.settings ? JSON.stringify(data.settings) : null,
       },

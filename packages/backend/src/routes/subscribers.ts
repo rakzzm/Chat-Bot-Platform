@@ -42,7 +42,13 @@ subscriberRouter.get('/labels', async (req: Request, res: Response) => {
 subscriberRouter.post('/labels', async (req: Request, res: Response) => {
   try {
     const data = createLabelSchema.parse(req.body);
-    const label = await prisma.label.create({ data });
+    const label = await prisma.label.create({
+      data: {
+        title: data.title,
+        name: data.name,
+        description: data.description,
+      },
+    });
     res.status(201).json(label);
   } catch (error) {
     if (error instanceof z.ZodError) {

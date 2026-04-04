@@ -20,13 +20,14 @@ analyticsRouter.get('/analytics', async (req: Request, res: Response) => {
       }),
     ]);
 
+    // @ts-expect-error Prisma groupBy circular type reference
     const topBots = await prisma.conversation.groupBy({
       by: ['botId'],
       _count: true,
       where: where as any,
       orderBy: { _count: 'desc' },
       take: 5,
-    });
+    }) as any;
 
     const botIds = topBots.map((b) => b.botId);
     const bots = await prisma.bot.findMany({
