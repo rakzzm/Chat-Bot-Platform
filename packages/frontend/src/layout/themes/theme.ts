@@ -43,7 +43,8 @@ declare module "@mui/material/Chip" {
 const defaultTheme = createTheme({});
 const COLOR_PALETTE = {
   black: "#000",
-  oceanGreen: "#1AA089",
+  purple: "#7B1FA2",
+  skyBlue: "#87CEEB",
   oliveGreen: "#96D445",
   lightGray: "#F5F6FA",
   lighterGray: "#f9fafc",
@@ -55,16 +56,16 @@ const COLOR_PALETTE = {
   buttonBorder: "#c0c4cc",
   buttonBorderHover: "#afdb3d",
   buttonBorderFocus: " #04bade",
-  buttonOutlinedColor: "#606266",
+  buttonOutlinedColor: "#7B1FA2",
   buttonOutlinedBorder: "#dcdfe6",
-  buttonOutlinedHover: "#eaf4f3",
+  buttonOutlinedHover: "#f3e5f5",
 };
 const COLORS = {
   primary: {
-    main: "#1AA089",
+    main: "#7B1FA2",
   },
   secondary: {
-    main: "#B23A49",
+    main: "#87CEEB",
   },
   error: {
     main: "#cc0000",
@@ -91,7 +92,8 @@ export const theme = createTheme({
       default: "#F5F6FA",
     },
     text: {
-      secondary: "#71839B",
+      primary: "#7B1FA2",
+      secondary: "#7B1FA2",
     },
     teal,
     grey,

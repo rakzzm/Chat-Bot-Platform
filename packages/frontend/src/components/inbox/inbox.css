@@ -1,12 +1,12 @@
 :root {
-  --cs-main-color: #43a29b;
-  --cs-main-color-light: #d7f0eb6e;
+  --cs-main-color: #7B1FA2;
+  --cs-main-color-light: #f3e5f56e;
   --cs-main-color-dark: #f5f6fa;
   --cs-message-incoming-color: #f5f6fa;
-  --cs-message-outgoing-color: #43a29b;
+  --cs-message-outgoing-color: #7B1FA2;
   --cs-message-outgoing-text-color: #ffffff;
   --cs-message-incming-text-color: hsl(174, 59%, 7%);
-  --cs-message-input-color: #43a29c3e;
+  --cs-message-input-color: #7B1FA23e;
   --cs-message-search-bg: #fdfefe;
   --cs-message-input-bg: #f5f6fa;
   --cs-message-input-bg-disabled: #e6e6e6;

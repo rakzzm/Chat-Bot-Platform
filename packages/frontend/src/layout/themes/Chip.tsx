@@ -27,15 +27,15 @@ const CHIP_SUCCESS_STYLE = {
 const CHIP_TITLE_STYLE = {
   ...CHIP_COMMON_STYLE,
   fontWeight: 700,
-  color: "#1AA089",
-  borderColor: "rgba(40,144,132,.2)",
-  backgroundColor: "rgba(40,144,132,.1)",
+  color: "#7B1FA2",
+  borderColor: "rgba(123,31,162,.2)",
+  backgroundColor: "rgba(123,31,162,.1)",
 };
 const CHIP_INFO_STYLE = {
   ...CHIP_COMMON_STYLE,
-  color: "#1AA089",
-  borderColor: "rgba(40,144,132,.2)",
-  backgroundColor: "rgba(40, 144, 132, .1)",
+  color: "#7B1FA2",
+  borderColor: "rgba(123,31,162,.2)",
+  backgroundColor: "rgba(123, 31, 162, .1)",
 };
 const CHIP_INBOX_STYLE = {
   ...CHIP_COMMON_STYLE,

@@ -44,7 +44,7 @@ export const buildMultiLineChartConfig =
     ...rest
   }: MultiLineChartProps): MultiLineChartProps => ({
     ...COMMON_CHART_PROPS,
-    colors: ["#1AA089", "#Ab1151", "#E6A23c"],
+    colors: ["#7B1FA2", "#Ab1151", "#E6A23c"],
     marker: {
       hidden: false,
       radius: 5,
@@ -69,7 +69,7 @@ export const buildColumnChartConfig = ({
   ...rest
 }: ColumnChartProps): ColumnChartProps => ({
   ...COMMON_CHART_PROPS,
-  colors: ["#1AA089", "#ab1151", "#e6a23c", "#57006f", "#108aa8"],
+  colors: ["#7B1FA2", "#ab1151", "#e6a23c", "#57006f", "#108aa8"],
   data,
   xAxis: {
     domainKey: "id",

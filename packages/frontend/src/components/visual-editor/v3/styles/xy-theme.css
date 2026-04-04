@@ -3,10 +3,10 @@
 .react-flow {
   --xy-background-color: #f7f9fb;
   /* Custom Variables */
-  --xy-theme-selected: #1dc7fc;
+  --xy-theme-selected: #7B1FA2;
   --xy-theme-hover: #c5c5c5;
   --xy-theme-edge-hover: black;
-  --xy-theme-color-focus: #e8e8e8;
+  --xy-theme-color-focus: #7B1FA2;
 
   /* Built-in Variables see https://reactflow.dev/learn/customization/theming */
   --xy-node-border-default: 1px solid #ededed;
