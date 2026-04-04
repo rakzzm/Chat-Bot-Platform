@@ -37,11 +37,11 @@ export default class OpenRouterLlmHelper extends BaseLlmHelper<
   }
 
   private async getClient() {
-    const settings = await this.getSettings();
+    const settings = await this.getSettings() as Record<string, unknown>;
     return {
-      apiKey: settings.api_key,
-      baseUrl: settings.base_url,
-      defaultModel: settings.default_model,
+      apiKey: settings.api_key as string,
+      baseUrl: settings.base_url as string,
+      defaultModel: settings.default_model as string,
     };
   }
 
@@ -129,7 +129,7 @@ export default class OpenRouterLlmHelper extends BaseLlmHelper<
     const { apiKey, baseUrl, defaultModel } = await this.getClient();
     const targetModel = model || defaultModel;
 
-    const messages = [];
+    const messages: Array<{ role: string; content: string }> = [];
     if (systemPrompt) {
       messages.push({ role: 'system', content: systemPrompt });
     }
@@ -138,9 +138,10 @@ export default class OpenRouterLlmHelper extends BaseLlmHelper<
     for (const msg of history) {
       // Simplification: handle only text messages for now
       if (msg.message && typeof msg.message === 'object' && 'text' in msg.message) {
+         const recipient = (msg as any).recipient;
          messages.push({
-           role: msg.recipient ? 'assistant' : 'user',
-           content: msg.message.text
+           role: recipient ? 'assistant' : 'user',
+           content: (msg.message as any).text
          });
       }
     }

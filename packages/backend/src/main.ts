@@ -14,6 +14,7 @@ import moduleAlias from 'module-alias';
 import { resolveDynamicProviders } from 'nestjs-dynamic-providers';
 import passport from 'passport';
 
+// @ts-expect-error module-alias types are incomplete
 moduleAlias.addAliases({
   '@': __dirname,
 });

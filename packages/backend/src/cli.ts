@@ -9,6 +9,7 @@
 import moduleAlias from 'module-alias';
 import { CommandFactory } from 'nest-commander';
 
+// @ts-expect-error module-alias types are incomplete
 moduleAlias.addAliases({
   '@': __dirname,
 });
