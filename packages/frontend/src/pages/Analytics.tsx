@@ -1,19 +1,20 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { BarChart3, TrendingUp, MessageSquare, Bot } from 'lucide-react';
+import { getBots, getAnalytics } from '../lib/api';
+import type { Bot } from '../types';
+import { BarChart3, TrendingUp, MessageSquare, Bot as BotIcon } from 'lucide-react';
 
 export default function Analytics() {
-  const [bots, setBots] = useState<any[]>([]);
+  const [bots, setBots] = useState<Bot[]>([]);
   const [selectedBot, setSelectedBot] = useState('');
-  const [stats, setStats] = useState({ totalConversations: 0, totalMessages: 0, conversationsByDay: [], topBots: [] });
+  const [stats, setStats] = useState({ totalConversations: 0, totalMessages: 0, conversationsByDay: [] as { date: string; count: number }[], topBots: [] as { id: string; name: string; count: number }[] });
 
   useEffect(() => {
-    axios.get('/api/bots').then(({ data }) => setBots(data));
+    getBots().then((data) => setBots(data));
   }, []);
 
   useEffect(() => {
-    axios.get('/api/analytics', { params: { botId: selectedBot || undefined } })
-      .then(({ data }) => setStats(data))
+    getAnalytics(selectedBot || undefined)
+      .then((data) => setStats(data))
       .catch(() => setStats({ totalConversations: 0, totalMessages: 0, conversationsByDay: [], topBots: [] }));
   }, [selectedBot]);
 
@@ -59,7 +60,7 @@ export default function Analytics() {
         <div className="bg-gray-800 rounded-lg p-5 border border-gray-700">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-purple-600/20 rounded-lg">
-              <Bot size={24} className="text-purple-400" />
+              <BotIcon size={24} className="text-purple-400" />
             </div>
             <div>
               <p className="text-sm text-gray-400">Active Bots</p>
@@ -80,7 +81,7 @@ export default function Analytics() {
                 <div className="w-32 bg-gray-700 rounded-full h-2">
                   <div
                     className="bg-teal-600 h-2 rounded-full"
-                    style={{ width: `${Math.min(100, (bot.count / (stats.topBots[0] as any)?.count || 1)) * 100)}%` }}
+                    style={{ width: `${Math.min(100, (bot.count / (stats.topBots[0] as any)?.count || 1) * 100)}%` }}
                   />
                 </div>
                 <span className="text-gray-400 text-sm w-12 text-right">{bot.count}</span>

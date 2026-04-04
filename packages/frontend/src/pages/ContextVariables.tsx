@@ -1,28 +1,30 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { getContextVariables, createContextVariable, deleteContextVariable } from '../lib/api';
+import type { ContextVariable } from '../types';
 import { Variable, Plus, Trash2 } from 'lucide-react';
 
 export default function ContextVariables() {
-  const [variables, setVariables] = useState<any[]>([]);
+  const [variables, setVariables] = useState<ContextVariable[]>([]);
   const [showCreate, setShowCreate] = useState(false);
   const [newVar, setNewVar] = useState({ name: '', permanent: false, defaultValue: '' });
 
   useEffect(() => {
-    axios.get('/api/context-variables').then(({ data }) => setVariables(data)).catch(() => setVariables([]));
+    getContextVariables().then((data) => setVariables(data)).catch(() => setVariables([]));
   }, []);
 
   const createVar = async () => {
     if (!newVar.name.trim()) return;
     try {
-      const { data } = await axios.post('/api/context-variables', newVar);
+      const data = await createContextVariable(newVar);
       setVariables((prev) => [...prev, data]);
       setNewVar({ name: '', permanent: false, defaultValue: '' });
       setShowCreate(false);
     } catch {}
   };
 
-  const deleteVar = async (id: string) => {
-    await axios.delete(`/api/context-variables/${id}`);
+  const handleDeleteVar = async (id: string) => {
+    if (!confirm('Delete this variable?')) return;
+    await deleteContextVariable(id);
     setVariables((prev) => prev.filter((v) => v.id !== id));
   };
 
@@ -97,7 +99,7 @@ export default function ContextVariables() {
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-400">{v.defaultValue || '-'}</td>
                   <td className="px-4 py-3 text-right">
-                    <button onClick={() => deleteVar(v.id)} className="text-gray-500 hover:text-red-400">
+                    <button onClick={() => handleDeleteVar(v.id)} className="text-gray-500 hover:text-red-400">
                       <Trash2 size={16} />
                     </button>
                   </td>

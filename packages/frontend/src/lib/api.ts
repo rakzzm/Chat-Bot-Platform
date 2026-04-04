@@ -103,8 +103,14 @@ export async function getFlows(botId: string): Promise<Flow[]> {
 }
 
 export async function getFlow(id: string): Promise<Flow & { nodes: FlowNode[]; connections: FlowConnection[] }> {
-  const { data } = await api.get(`/flows/${id}`);
-  return data;
+  const { data } = await api.get<Flow & { nodes: (Omit<FlowNode, 'data'> & { data: string })[]; connections: FlowConnection[] }>(`/flows/${id}`);
+  return {
+    ...data,
+    nodes: data.nodes.map(n => ({
+      ...n,
+      data: typeof n.data === 'string' ? JSON.parse(n.data) : n.data
+    }))
+  };
 }
 
 export async function createFlow(payload: { label: string; botId: string; isStart?: boolean }): Promise<Flow> {
@@ -122,18 +128,34 @@ export async function deleteFlow(id: string): Promise<void> {
 }
 
 export async function getFlowNodes(flowId: string): Promise<FlowNode[]> {
-  const { data } = await api.get<FlowNode[]>(`/flows/${flowId}/nodes`);
-  return data;
+  const { data } = await api.get<(Omit<FlowNode, 'data'> & { data: string })[]>(`/flows/${flowId}/nodes`);
+  return data.map(n => ({
+    ...n,
+    data: typeof n.data === 'string' ? JSON.parse(n.data) : n.data
+  }));
 }
 
 export async function createFlowNode(payload: { flowId: string; type: string; positionX: number; positionY: number; data: Record<string, unknown> }): Promise<FlowNode> {
-  const { data } = await api.post<FlowNode>('/flows/nodes', payload);
-  return data;
+  const { data } = await api.post<Omit<FlowNode, 'data'> & { data: string }>('/flows/nodes', {
+    ...payload,
+    data: JSON.stringify(payload.data)
+  });
+  return {
+    ...data,
+    data: JSON.parse(data.data)
+  };
 }
 
 export async function updateFlowNode(id: string, payload: Partial<FlowNode>): Promise<FlowNode> {
-  const { data } = await api.patch<FlowNode>(`/flows/nodes/${id}`, payload);
-  return data;
+  const apiPayload: any = { ...payload };
+  if (payload.data) {
+    apiPayload.data = JSON.stringify(payload.data);
+  }
+  const { data } = await api.patch<Omit<FlowNode, 'data'> & { data: string }>(`/flows/nodes/${id}`, apiPayload);
+  return {
+    ...data,
+    data: JSON.parse(data.data)
+  };
 }
 
 export async function deleteFlowNode(id: string): Promise<void> {

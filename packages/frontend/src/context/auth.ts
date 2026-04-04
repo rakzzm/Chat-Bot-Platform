@@ -1,11 +1,6 @@
 import { create } from 'zustand';
-import axios from 'axios';
-
-interface User {
-  id: string;
-  email: string;
-  name: string;
-}
+import { login as apiLogin, register as apiRegister, clearAuthToken } from '../lib/api';
+import type { User } from '../types';
 
 interface AuthState {
   user: User | null;
@@ -20,19 +15,17 @@ export const useAuthStore = create<AuthState>((set) => ({
   token: null,
 
   login: async (email: string, password: string) => {
-    const { data } = await axios.post('/api/auth/login', { email, password });
+    const data = await apiLogin(email, password);
     set({ user: data.user, token: data.token });
-    axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
   },
 
   register: async (email: string, password: string, name: string) => {
-    const { data } = await axios.post('/api/auth/register', { email, password, name });
+    const data = await apiRegister(email, password, name);
     set({ user: data.user, token: data.token });
-    axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
   },
 
   logout: () => {
     set({ user: null, token: null });
-    delete axios.defaults.headers.common['Authorization'];
+    clearAuthToken();
   },
 }));

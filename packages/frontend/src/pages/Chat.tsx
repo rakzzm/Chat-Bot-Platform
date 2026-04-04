@@ -1,18 +1,7 @@
 import { useState, useEffect, useRef, FormEvent } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import axios from 'axios';
-
-interface Message {
-  id: string;
-  role: string;
-  content: string;
-  createdAt: string;
-}
-
-interface Bot {
-  id: string;
-  name: string;
-}
+import { getBots, sendMessage } from '../lib/api';
+import type { Bot, Message } from '../types';
 
 export default function Chat() {
   const [searchParams] = useSearchParams();
@@ -24,7 +13,7 @@ export default function Chat() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    axios.get('/api/bots').then(({ data }) => setBots(data));
+    getBots().then((data) => setBots(data));
   }, []);
 
   useEffect(() => {
@@ -40,13 +29,15 @@ export default function Chat() {
       role: 'user',
       content: input.trim(),
       createdAt: new Date().toISOString(),
+      conversationId: '',
+      metadata: null,
     };
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
     setLoading(true);
 
     try {
-      const { data } = await axios.post('/api/conversations', {
+      const data = await sendMessage({
         botId: selectedBot,
         message: userMsg.content,
       });
@@ -59,6 +50,8 @@ export default function Chat() {
           role: 'assistant',
           content: 'Sorry, something went wrong.',
           createdAt: new Date().toISOString(),
+          conversationId: '',
+          metadata: null,
         },
       ]);
     } finally {

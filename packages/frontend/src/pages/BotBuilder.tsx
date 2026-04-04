@@ -1,14 +1,8 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import { getBot, createBot, updateBot } from '../lib/api';
+import type { CreateBotRequest } from '../types';
 import { ArrowLeft, Save } from 'lucide-react';
-
-interface BotForm {
-  name: string;
-  description: string;
-  systemPrompt: string;
-  model: string;
-}
 
 const MODELS = [
   'qwen/qwen3.6-plus:free',
@@ -25,7 +19,7 @@ const MODELS = [
 export default function BotBuilder() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [form, setForm] = useState<BotForm>({
+  const [form, setForm] = useState<CreateBotRequest>({
     name: '',
     description: '',
     systemPrompt: 'You are a helpful assistant.',
@@ -36,7 +30,12 @@ export default function BotBuilder() {
 
   useEffect(() => {
     if (id) {
-      axios.get(`/api/bots/${id}`).then(({ data }) => setForm(data));
+      getBot(id).then((data) => setForm({
+        name: data.name,
+        description: data.description ?? '',
+        systemPrompt: data.systemPrompt ?? 'You are a helpful assistant.',
+        model: data.model,
+      }));
     }
   }, [id]);
 
@@ -47,9 +46,9 @@ export default function BotBuilder() {
     try {
       let botId = id;
       if (id) {
-        await axios.patch(`/api/bots/${id}`, form);
+        await updateBot(id, form);
       } else {
-        const { data } = await axios.post('/api/bots', form);
+        const data = await createBot(form);
         botId = data.id;
       }
       navigate(`/bots/${botId}/editor`);

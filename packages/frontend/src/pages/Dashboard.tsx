@@ -1,18 +1,19 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { getBots, getConversations } from '../lib/api';
+import type { Bot as BotType } from '../types';
 import { Bot, MessageSquare, Users, TrendingUp } from 'lucide-react';
 
 export default function Dashboard() {
-  const [bots, setBots] = useState<any[]>([]);
+  const [bots, setBots] = useState<BotType[]>([]);
   const [stats, setStats] = useState({ botCount: 0, conversationCount: 0 });
 
   useEffect(() => {
-    axios.get('/api/bots').then(({ data }) => {
+    getBots().then((data) => {
       setBots(data);
       setStats((prev) => ({ ...prev, botCount: data.length }));
     });
-    axios.get('/api/conversations').then(({ data }) => {
+    getConversations().then((data) => {
       setStats((prev) => ({ ...prev, conversationCount: data.length }));
     });
   }, []);

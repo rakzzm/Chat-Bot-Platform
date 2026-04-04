@@ -1,30 +1,32 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { getSubscribers, getLabels, createLabel as apiCreateLabel, deleteLabel } from '../lib/api';
+import type { Subscriber, Label } from '../types';
 import { Users, Plus, Tag, Trash2 } from 'lucide-react';
 
 export default function Subscribers() {
-  const [subscribers, setSubscribers] = useState<any[]>([]);
-  const [labels, setLabels] = useState<any[]>([]);
+  const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
+  const [labels, setLabels] = useState<Label[]>([]);
   const [showCreateLabel, setShowCreateLabel] = useState(false);
   const [newLabel, setNewLabel] = useState({ title: '', name: '', description: '' });
 
   useEffect(() => {
-    axios.get('/api/subscribers').then(({ data }) => setSubscribers(data)).catch(() => setSubscribers([]));
-    axios.get('/api/labels').then(({ data }) => setLabels(data)).catch(() => setLabels([]));
+    getSubscribers().then((data) => setSubscribers(data)).catch(() => setSubscribers([]));
+    getLabels().then((data) => setLabels(data)).catch(() => setLabels([]));
   }, []);
 
   const createLabel = async () => {
     if (!newLabel.title.trim() || !newLabel.name.trim()) return;
     try {
-      const { data } = await axios.post('/api/labels', newLabel);
+      const data = await apiCreateLabel(newLabel);
       setLabels((prev) => [...prev, data]);
       setNewLabel({ title: '', name: '', description: '' });
       setShowCreateLabel(false);
     } catch {}
   };
 
-  const deleteLabel = async (id: string) => {
-    await axios.delete(`/api/labels/${id}`);
+  const handleDeleteLabel = async (id: string) => {
+    if (!confirm('Delete this label?')) return;
+    await deleteLabel(id);
     setLabels((prev) => prev.filter((l) => l.id !== id));
   };
 
@@ -48,7 +50,7 @@ export default function Subscribers() {
               <div key={label.id} className="flex items-center gap-1 bg-gray-700 rounded-full px-3 py-1 text-sm text-gray-300">
                 <Tag size={12} />
                 {label.title}
-                <button onClick={() => deleteLabel(label.id)} className="ml-1 text-gray-500 hover:text-red-400">
+                <button onClick={() => handleDeleteLabel(label.id)} className="ml-1 text-gray-500 hover:text-red-400">
                   <Trash2 size={12} />
                 </button>
               </div>

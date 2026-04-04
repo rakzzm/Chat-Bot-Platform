@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { getBots, deleteBot } from '../lib/api';
+import type { Bot as BotType } from '../types';
 import { Plus, Bot, Trash2, Edit, GitBranch } from 'lucide-react';
 
 export default function BotList() {
-  const [bots, setBots] = useState<any[]>([]);
+  const [bots, setBots] = useState<BotType[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('/api/bots').then(({ data }) => {
+    getBots().then((data) => {
       setBots(data);
       setLoading(false);
     });
@@ -16,7 +17,7 @@ export default function BotList() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this bot?')) return;
-    await axios.delete(`/api/bots/${id}`);
+    await deleteBot(id);
     setBots((prev) => prev.filter((b) => b.id !== id));
   };
 

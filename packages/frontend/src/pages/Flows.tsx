@@ -1,28 +1,29 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { getBots, getFlows, createFlow as apiCreateFlow, deleteFlow, updateFlow } from '../lib/api';
+import type { Bot, Flow } from '../types';
 import { Plus, GitBranch, Trash2, Star } from 'lucide-react';
 
 export default function Flows() {
-  const [bots, setBots] = useState<any[]>([]);
+  const [bots, setBots] = useState<Bot[]>([]);
   const [selectedBot, setSelectedBot] = useState<string>('');
-  const [flows, setFlows] = useState<any[]>([]);
+  const [flows, setFlows] = useState<Flow[]>([]);
   const [showCreate, setShowCreate] = useState(false);
   const [newFlowLabel, setNewFlowLabel] = useState('');
 
   useEffect(() => {
-    axios.get('/api/bots').then(({ data }) => setBots(data));
+    getBots().then((data) => setBots(data));
   }, []);
 
   useEffect(() => {
     if (!selectedBot) return;
-    axios.get(`/api/bots/${selectedBot}/flows`).then(({ data }) => setFlows(data));
+    getFlows(selectedBot).then((data) => setFlows(data));
   }, [selectedBot]);
 
   const createFlow = async () => {
     if (!newFlowLabel.trim() || !selectedBot) return;
     try {
-      const { data } = await axios.post('/api/flows', {
+      const data = await apiCreateFlow({
         label: newFlowLabel,
         botId: selectedBot,
       });
@@ -32,14 +33,14 @@ export default function Flows() {
     } catch {}
   };
 
-  const deleteFlow = async (id: string) => {
+  const handleDeleteFlow = async (id: string) => {
     if (!confirm('Delete this flow?')) return;
-    await axios.delete(`/api/flows/${id}`);
+    await deleteFlow(id);
     setFlows((prev) => prev.filter((f) => f.id !== id));
   };
 
   const setStartFlow = async (id: string) => {
-    await axios.patch(`/api/flows/${id}`, { isStart: true });
+    await updateFlow(id, { isStart: true });
     setFlows((prev) => prev.map((f) => ({ ...f, isStart: f.id === id })));
   };
 
@@ -149,7 +150,7 @@ export default function Flows() {
                             <GitBranch size={16} />
                           </Link>
                           <button
-                            onClick={() => deleteFlow(flow.id)}
+                            onClick={() => handleDeleteFlow(flow.id)}
                             className="p-1.5 rounded hover:bg-gray-600 text-gray-400 hover:text-red-400"
                             title="Delete"
                           >

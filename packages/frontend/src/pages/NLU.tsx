@@ -1,23 +1,24 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { getNluIntents, getNluEntities, createNluIntent, deleteNluIntent, deleteNluEntity } from '../lib/api';
+import type { NluIntent, NluEntity } from '../types';
 import { Brain, Plus, Trash2 } from 'lucide-react';
 
 export default function NLU() {
   const [activeTab, setActiveTab] = useState<'intents' | 'entities'>('intents');
-  const [intents, setIntents] = useState<any[]>([]);
-  const [entities, setEntities] = useState<any[]>([]);
+  const [intents, setIntents] = useState<NluIntent[]>([]);
+  const [entities, setEntities] = useState<NluEntity[]>([]);
   const [showCreate, setShowCreate] = useState(false);
   const [newItem, setNewItem] = useState({ name: '', examples: '', responses: '' });
 
   useEffect(() => {
-    axios.get('/api/nlu/intents').then(({ data }) => setIntents(data)).catch(() => setIntents([]));
-    axios.get('/api/nlu/entities').then(({ data }) => setEntities(data)).catch(() => setEntities([]));
+    getNluIntents().then((data) => setIntents(data)).catch(() => setIntents([]));
+    getNluEntities().then((data) => setEntities(data)).catch(() => setEntities([]));
   }, []);
 
   const createIntent = async () => {
     if (!newItem.name.trim()) return;
     try {
-      const { data } = await axios.post('/api/nlu/intents', {
+      const data = await createNluIntent({
         name: newItem.name,
         examples: newItem.examples.split('\n').filter(Boolean),
         responses: newItem.responses.split('\n').filter(Boolean),
@@ -28,9 +29,16 @@ export default function NLU() {
     } catch {}
   };
 
-  const deleteIntent = async (id: string) => {
-    await axios.delete(`/api/nlu/intents/${id}`);
+  const handleDeleteIntent = async (id: string) => {
+    if (!confirm('Delete this intent?')) return;
+    await deleteNluIntent(id);
     setIntents((prev) => prev.filter((i) => i.id !== id));
+  };
+
+  const handleDeleteEntity = async (id: string) => {
+    if (!confirm('Delete this entity?')) return;
+    await deleteNluEntity(id);
+    setEntities((prev) => prev.filter((e) => e.id !== id));
   };
 
   return (
@@ -118,7 +126,7 @@ export default function NLU() {
                         </div>
                       </div>
                     </div>
-                    <button onClick={() => deleteIntent(intent.id)} className="text-gray-500 hover:text-red-400">
+                    <button onClick={() => handleDeleteIntent(intent.id)} className="text-gray-500 hover:text-red-400">
                       <Trash2 size={16} />
                     </button>
                   </div>
@@ -150,7 +158,7 @@ export default function NLU() {
                         ))}
                       </div>
                     </div>
-                    <button className="text-gray-500 hover:text-red-400">
+                    <button onClick={() => handleDeleteEntity(entity.id)} className="text-gray-500 hover:text-red-400">
                       <Trash2 size={16} />
                     </button>
                   </div>

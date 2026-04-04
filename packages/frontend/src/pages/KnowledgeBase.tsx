@@ -1,28 +1,30 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { getKnowledgeBases, createKnowledgeBase, deleteKnowledgeBase } from '../lib/api';
+import type { KnowledgeBase as KBType } from '../types';
 import { BookOpen, Plus, Trash2 } from 'lucide-react';
 
 export default function KnowledgeBase() {
-  const [knowledgeBases, setKnowledgeBases] = useState<any[]>([]);
+  const [knowledgeBases, setKnowledgeBases] = useState<KBType[]>([]);
   const [showCreate, setShowCreate] = useState(false);
   const [newKB, setNewKB] = useState({ title: '', contentType: 'faq' });
 
   useEffect(() => {
-    axios.get('/api/knowledge').then(({ data }) => setKnowledgeBases(data)).catch(() => setKnowledgeBases([]));
+    getKnowledgeBases().then((data) => setKnowledgeBases(data)).catch(() => setKnowledgeBases([]));
   }, []);
 
   const createKB = async () => {
     if (!newKB.title.trim()) return;
     try {
-      const { data } = await axios.post('/api/knowledge', newKB);
+      const data = await createKnowledgeBase(newKB);
       setKnowledgeBases((prev) => [...prev, data]);
       setNewKB({ title: '', contentType: 'faq' });
       setShowCreate(false);
     } catch {}
   };
 
-  const deleteKB = async (id: string) => {
-    await axios.delete(`/api/knowledge/${id}`);
+  const handleDeleteKB = async (id: string) => {
+    if (!confirm('Delete this knowledge base?')) return;
+    await deleteKnowledgeBase(id);
     setKnowledgeBases((prev) => prev.filter((k) => k.id !== id));
   };
 
@@ -78,7 +80,7 @@ export default function KnowledgeBase() {
                   <h3 className="text-white font-medium">{kb.title}</h3>
                   <span className="text-xs text-gray-500 capitalize">{kb.contentType}</span>
                 </div>
-                <button onClick={() => deleteKB(kb.id)} className="text-gray-500 hover:text-red-400">
+                <button onClick={() => handleDeleteKB(kb.id)} className="text-gray-500 hover:text-red-400">
                   <Trash2 size={16} />
                 </button>
               </div>

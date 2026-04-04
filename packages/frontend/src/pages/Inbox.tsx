@@ -1,36 +1,39 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { getConversations, getMessages, sendMessage } from '../lib/api';
+import type { Conversation, Message } from '../types';
 import { Search, MessageSquare, User } from 'lucide-react';
 
 export default function Inbox() {
-  const [conversations, setConversations] = useState<any[]>([]);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConv, setSelectedConv] = useState<string | null>(null);
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    axios.get('/api/conversations').then(({ data }) => setConversations(data));
+    getConversations().then((data) => setConversations(data));
   }, []);
 
   useEffect(() => {
     if (!selectedConv) return;
-    axios.get(`/api/conversations/${selectedConv}/messages`).then(({ data }) => setMessages(data));
+    getMessages(selectedConv).then((data) => setMessages(data));
   }, [selectedConv]);
 
   const handleSend = async () => {
     if (!input.trim() || !selectedConv || loading) return;
-    const userMsg = { id: Date.now().toString(), role: 'user', content: input.trim(), createdAt: new Date().toISOString() };
+    const conv = conversations.find((c) => c.id === selectedConv);
+    if (!conv) return;
+
+    const userMsg: Message = { id: Date.now().toString(), role: 'user', content: input.trim(), createdAt: new Date().toISOString(), conversationId: selectedConv, metadata: null };
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
     setLoading(true);
     try {
-      const conv = conversations.find((c) => c.id === selectedConv);
-      const { data } = await axios.post('/api/conversations', { botId: conv.botId, message: userMsg.content });
+      const data = await sendMessage({ botId: conv.botId, message: userMsg.content });
       setMessages((prev) => [...prev, data.botMessage]);
     } catch {
-      setMessages((prev) => [...prev, { id: Date.now().toString(), role: 'assistant', content: 'Error sending message.', createdAt: new Date().toISOString() }]);
+      setMessages((prev) => [...prev, { id: Date.now().toString(), role: 'assistant', content: 'Error sending message.', createdAt: new Date().toISOString(), conversationId: selectedConv, metadata: null }]);
     } finally {
       setLoading(false);
     }

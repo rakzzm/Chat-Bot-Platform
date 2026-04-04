@@ -19,7 +19,12 @@ import {
   Code, Database, GitBranch, Plus, Save, ArrowLeft, Trash2,
   Type, PanelLeft, Settings, Zap
 } from 'lucide-react';
-import axios from 'axios';
+import {
+  getFlows, getFlow, createFlow as apiCreateFlow,
+  createFlowNode, updateFlowNode, deleteFlowNode,
+  createFlowConnection
+} from '../lib/api';
+import type { Flow, FlowNode, FlowConnection } from '../types';
 
 const BLOCK_TYPES = [
   { type: 'text', label: 'Simple Text', icon: Type, color: 'bg-blue-500' },
@@ -83,9 +88,9 @@ export default function VisualEditor() {
   const navigate = useNavigate();
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [flows, setFlows] = useState<any[]>([]);
+  const [flows, setFlows] = useState<Flow[]>([]);
   const [activeFlow, setActiveFlow] = useState<string | null>(null);
-  const [selectedNode, setSelectedNode] = useState<any>(null);
+  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [showPanel, setShowPanel] = useState(true);
   const [nodeFormData, setNodeFormData] = useState<Record<string, unknown>>({});
   const [saving, setSaving] = useState(false);
@@ -93,7 +98,7 @@ export default function VisualEditor() {
 
   useEffect(() => {
     if (!botId) return;
-    axios.get(`/api/bots/${botId}/flows`).then(({ data }) => {
+    getFlows(botId).then((data) => {
       setFlows(data);
       if (data.length > 0) {
         setActiveFlow(data[0].id);
@@ -104,14 +109,14 @@ export default function VisualEditor() {
 
   const loadFlowNodes = async (flowId: string) => {
     try {
-      const { data } = await axios.get(`/api/flows/${flowId}`);
-      const rfNodes: Node[] = (data.nodes || []).map((n: any) => ({
+      const data = await getFlow(flowId);
+      const rfNodes: Node[] = (data.nodes || []).map((n: FlowNode) => ({
         id: n.id,
         type: 'custom',
         position: { x: n.positionX, y: n.positionY },
-        data: { type: n.type, label: getBlockLabel(n.type), ...JSON.parse(n.data || '{}') },
+        data: { type: n.type, label: getBlockLabel(n.type), ...((typeof n.data === 'string' ? JSON.parse(n.data) : n.data) || {}) },
       }));
-      const rfEdges: Edge[] = (data.connections || []).map((c: any) => ({
+      const rfEdges: Edge[] = (data.connections || []).map((c: FlowConnection) => ({
         id: c.id,
         source: c.sourceNodeId,
         target: c.targetNodeId,
@@ -140,9 +145,9 @@ export default function VisualEditor() {
         style: { stroke: '#6b7280' },
       };
       setEdges((eds) => addEdge(newEdge, eds));
-      if (activeFlow) {
+      if (activeFlow && connection.source && connection.target) {
         try {
-          await axios.post('/api/flows/connections', {
+          await createFlowConnection({
             sourceNodeId: connection.source,
             targetNodeId: connection.target,
           });
@@ -153,6 +158,8 @@ export default function VisualEditor() {
   );
 
   const addNode = async (type: string) => {
+    if (!activeFlow) return;
+
     const id = `node_${Date.now()}`;
     const newNode: Node = {
       id,
@@ -160,21 +167,25 @@ export default function VisualEditor() {
       position: { x: 250 + Math.random() * 200, y: 200 + Math.random() * 200 },
       data: { type, label: getBlockLabel(type), ...defaultNodeData[type] },
     };
-    setNodes((nds) => [...nds, newNode]);
-    setSelectedNode(newNode);
-    setNodeFormData({ ...defaultNodeData[type] });
-    setShowPanel(true);
 
-    if (activeFlow) {
-      try {
-        await axios.post('/api/flows/nodes', {
-          flowId: activeFlow,
-          type,
-          positionX: newNode.position.x,
-          positionY: newNode.position.y,
-          data: JSON.stringify(defaultNodeData[type]),
-        });
-      } catch {}
+    try {
+      const createdNode = await createFlowNode({
+        flowId: activeFlow,
+        type,
+        positionX: newNode.position.x,
+        positionY: newNode.position.y,
+        data: defaultNodeData[type],
+      });
+
+      // Use the actual ID from the database
+      newNode.id = createdNode.id;
+
+      setNodes((nds) => [...nds, newNode]);
+      setSelectedNode(newNode);
+      setNodeFormData({ ...defaultNodeData[type] });
+      setShowPanel(true);
+    } catch (err) {
+      console.error('Failed to create node', err);
     }
   };
 
@@ -189,8 +200,8 @@ export default function VisualEditor() {
     if (!selectedNode || !activeFlow) return;
     setSaving(true);
     try {
-      await axios.patch(`/api/flows/nodes/${selectedNode.id}`, {
-        data: JSON.stringify(nodeFormData),
+      await updateFlowNode(selectedNode.id, {
+        data: nodeFormData,
       });
       setNodes((nds) =>
         nds.map((n) =>
@@ -206,7 +217,7 @@ export default function VisualEditor() {
   const deleteNode = async () => {
     if (!selectedNode) return;
     try {
-      await axios.delete(`/api/flows/nodes/${selectedNode.id}`);
+      await deleteFlowNode(selectedNode.id);
     } catch {}
     setNodes((nds) => nds.filter((n) => n.id !== selectedNode.id));
     setEdges((eds) => eds.filter((e) => e.source !== selectedNode.id && e.target !== selectedNode.id));
@@ -217,7 +228,7 @@ export default function VisualEditor() {
     const label = prompt('Flow name:');
     if (!label || !botId) return;
     try {
-      const { data } = await axios.post('/api/flows', { label, botId });
+      const data = await apiCreateFlow({ label, botId });
       setFlows((prev) => [...prev, data]);
       setActiveFlow(data.id);
       setNodes([]);
@@ -231,7 +242,7 @@ export default function VisualEditor() {
     for (const change of changes) {
       if (change.type === 'position' && change.position) {
         try {
-          await axios.patch(`/api/flows/nodes/${change.id}`, {
+          await updateFlowNode(change.id, {
             positionX: change.position.x,
             positionY: change.position.y,
           });
