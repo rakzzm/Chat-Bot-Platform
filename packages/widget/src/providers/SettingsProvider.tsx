@@ -66,7 +66,7 @@ const defaultSettings: ChatSettings = {
   showTypingIndicator: true,
   alwaysScrollToBottom: true,
   focusOnOpen: true,
-  title: "Hexabot :)",
+  title: "Megh EngageX",
   titleImageUrl: "",
   inputDisabled: false,
   placeholder: "Write something...",

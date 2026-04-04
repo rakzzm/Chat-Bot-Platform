@@ -221,7 +221,7 @@ const defaultCtx: ChatContextType = {
   participants: [
     {
       id: "chatbot",
-      name: "Hexabot",
+      name: "Megh EngageX",
       foreign_id: "chatbot",
       imageUrl: "",
     },

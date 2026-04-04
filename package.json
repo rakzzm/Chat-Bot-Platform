@@ -2,7 +2,7 @@
   "name": "chat-bot-platform",
   "version": "1.0.0",
   "private": true,
-  "description": "AI-powered chat bot platform builder for SMEs — powered by Hexabot",
+  "description": "AI-powered chat bot platform builder for SMEs — powered by Megh EngageX",
   "workspaces": [
     "packages/*"
   ],

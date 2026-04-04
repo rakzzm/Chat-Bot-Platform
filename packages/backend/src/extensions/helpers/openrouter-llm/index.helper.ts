@@ -68,8 +68,8 @@ export default class OpenRouterLlmHelper extends BaseLlmHelper<
         {
           headers: {
             Authorization: `Bearer ${apiKey}`,
-            'HTTP-Referer': 'https://hexabot.ai',
-            'X-Title': 'Hexabot Chat Bot Platform',
+            'HTTP-Referer': 'https://megh-engage-x.ai',
+            'X-Title': 'Megh EngageX Chat Bot Platform',
           },
         },
       ),
@@ -103,8 +103,8 @@ export default class OpenRouterLlmHelper extends BaseLlmHelper<
         {
           headers: {
             Authorization: `Bearer ${apiKey}`,
-            'HTTP-Referer': 'https://hexabot.ai',
-            'X-Title': 'Hexabot Chat Bot Platform',
+            'HTTP-Referer': 'https://megh-engage-x.ai',
+            'X-Title': 'Megh EngageX Chat Bot Platform',
           },
         },
       ),
@@ -134,7 +134,7 @@ export default class OpenRouterLlmHelper extends BaseLlmHelper<
       messages.push({ role: 'system', content: systemPrompt });
     }
 
-    // Map Hexabot messages to OpenAI format
+    // Map messages to OpenAI format
     for (const msg of history) {
       // Simplification: handle only text messages for now
       if (msg.message && typeof msg.message === 'object' && 'text' in msg.message) {
@@ -159,8 +159,8 @@ export default class OpenRouterLlmHelper extends BaseLlmHelper<
         {
           headers: {
             Authorization: `Bearer ${apiKey}`,
-            'HTTP-Referer': 'https://hexabot.ai',
-            'X-Title': 'Hexabot Chat Bot Platform',
+            'HTTP-Referer': 'https://megh-engage-x.ai',
+            'X-Title': 'Megh EngageX Chat Bot Platform',
           },
         },
       ),

@@ -64,7 +64,7 @@ const App = ({ Component, pageProps }: TAppPropsWithLayout) => {
   return (
     <>
       <Head>
-        <title>Hexabot</title>
+        <title>Megh EngageX</title>
         <link rel="icon" href="/images/favicon.ico" />
         <meta
           name="viewport"

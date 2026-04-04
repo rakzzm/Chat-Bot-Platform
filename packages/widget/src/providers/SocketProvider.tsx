@@ -42,16 +42,16 @@ export const SocketProvider = ({
       onConnect: () => {
         // eslint-disable-next-line no-console
         console.info(
-          "Hexabot Live Chat : Successfully established WS Connection!",
+          "Megh EngageX : Successfully established WS Connection!",
         );
       },
       onConnectError: () => {
         // eslint-disable-next-line no-console
-        console.error("Hexabot Live Chat : Failed to establish WS Connection!");
+        console.error("Megh EngageX : Failed to establish WS Connection!");
       },
       onDisconnect: () => {
         // eslint-disable-next-line no-console
-        console.info("Hexabot Live Chat : Disconnected WS.");
+        console.info("Megh EngageX : Disconnected WS.");
       },
     }),
   );
