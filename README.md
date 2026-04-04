@@ -1,108 +1,109 @@
 # Chat Bot Platform
 
-AI-powered chat bot platform builder for SMEs. Create, configure, and deploy custom AI chatbots with a visual builder interface.
+AI-powered chatbot platform built on [Hexabot](https://github.com/Hexastack/Hexabot) — an open-source solution for creating and managing chatbots across multiple channels with advanced AI conversational capabilities.
 
 ## Tech Stack
 
-- **Backend**: Node.js, Express, TypeScript, Prisma ORM, WebSocket
-- **Frontend**: React, TypeScript, Vite, TailwindCSS, Zustand
-- **Database**: SQLite (dev), PostgreSQL (prod-ready)
-- **AI**: OpenRouter API (Qwen, Gemini, Llama, Claude, GPT), multi-model support
+- **Backend**: NestJS, TypeScript, MongoDB, Mongoose, Socket.IO
+- **Frontend**: Next.js 15, React 18, TypeScript, Material-UI, React Flow
+- **Database**: MongoDB 7.0
+- **AI**: OpenAI-compatible API integration, multi-model support
 
 ## Project Structure
 
 ```
 ├── packages/
-│   ├── backend/          # Express API server
+│   ├── backend/          # Hexabot NestJS API
 │   │   ├── src/
-│   │   │   ├── routes/   # API route handlers
-│   │   │   ├── middleware/ # Auth middleware
-│   │   │   ├── services/ # OpenAI integration
-│   │   │   ├── websocket/ # Real-time connections
-│   │   │   └── utils/    # Database & helpers
-│   │   └── prisma/       # Database schema
-│   └── frontend/         # React SPA
-│       └── src/
-│           ├── components/ # Reusable UI
-│           ├── pages/      # Route pages
-│           ├── context/    # Auth state
-│           └── types/      # TypeScript types
+│   │   │   ├── analytics/    # Analytics module
+│   │   │   ├── attachment/   # File attachments
+│   │   │   ├── channel/      # Channel integrations
+│   │   │   ├── chat/         # Chat & conversation management
+│   │   │   ├── cms/          # Content management
+│   │   │   ├── nlp/          # NLP & intent recognition
+│   │   │   ├── setting/      # Platform settings
+│   │   │   ├── user/         # User management & auth
+│   │   │   ├── websocket/    # Real-time communication
+│   │   │   └── ...
+│   │   └── test/         # E2E & unit tests
+│   └── frontend/         # Hexabot Next.js UI
+│       ├── src/
+│       │   ├── app-components/  # Reusable UI components
+│       │   ├── components/      # Feature components
+│       │   ├── pages/           # Route pages
+│       │   ├── services/        # API services
+│       │   └── types/           # TypeScript types
+│       └── public/         # Static assets
 ├── docker-compose.yml
-├── Dockerfile
+├── .env.example
 └── package.json
 ```
+
+## Features
+
+- **Visual Flow Editor** — Drag-and-drop conversation builder with React Flow
+- **Multi-Channel Support** — Web, WhatsApp, Telegram, and more
+- **NLP & AI** — Intent recognition, entity extraction, AI-powered responses
+- **Content Management** — FAQ, product catalogs, knowledge base
+- **Analytics** — Conversation metrics, user engagement, message stats
+- **Subscriber Management** — Audience segmentation and labeling
+- **Inbox** — Real-time conversation monitoring
+- **Settings** — Widget themes, channel config, fallback rules
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js >= 18
-- npm >= 9
+- Node.js 20.x
+- Docker & Docker Compose
+- npm >= 10
 
-### Installation
+### Local Development (Docker)
+
+```bash
+# Copy environment file
+cp .env.example .env
+
+# Start all services
+docker compose up --build
+```
+
+- **API**: http://localhost:4000
+- **Frontend**: http://localhost:8080
+- **Mongo Express**: http://localhost:9000
+
+### Manual Setup
 
 ```bash
 # Install dependencies
 npm install
 
-# Run interactive setup (prompts for OpenRouter API key)
-npm run setup
+# Start backend (NestJS)
+npm run dev:backend
 
-# Initialize database
-npm run db:generate
-npm run db:push
-
-# Start development servers
-npm run dev
+# Start frontend (Next.js) — in another terminal
+npm run dev:frontend
 ```
 
-Or set the API key manually:
+## Environment Variables
 
-```bash
-cp packages/backend/.env.example packages/backend/.env
-# Edit .env and add your OPENROUTER_API_KEY (get one at https://openrouter.ai)
-```
+See `.env.example` for all available configuration options. Key variables:
 
-**Quick CLI one-liner to set the API key:**
+- `MONGO_URI` — MongoDB connection string
+- `JWT_SECRET` — JWT signing secret
+- `API_PORT` — Backend port (default: 4000)
+- `APP_FRONTEND_PORT` — Frontend port (default: 8080)
 
-```bash
-echo 'OPENROUTER_API_KEY="sk-or-v1-your-key-here"' > packages/backend/.env
-```
+## Scripts
 
-- Backend: http://localhost:3001
-- Frontend: http://localhost:5173
-
-### Docker
-
-```bash
-docker compose up --build
-```
-
-## Features
-
-- User authentication (register/login with JWT)
-- Bot builder with custom system prompts
-- Multiple AI model support via OpenRouter (Qwen, Gemini, Llama, Claude, GPT)
-- Real-time chat via WebSocket
-- Conversation history
-- Responsive UI with TailwindCSS
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | /api/auth/register | Register new user |
-| POST | /api/auth/login | Login user |
-| GET | /api/bots | List user's bots |
-| POST | /api/bots | Create a bot |
-| GET | /api/bots/:id | Get bot details |
-| PATCH | /api/bots/:id | Update bot |
-| DELETE | /api/bots/:id | Delete bot |
-| GET | /api/conversations | List conversations |
-| POST | /api/conversations | Send message |
-| GET | /api/conversations/:id/messages | Get messages |
-| GET | /api/health | Health check |
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start both backend and frontend |
+| `npm run dev:backend` | Start NestJS API with hot reload |
+| `npm run dev:frontend` | Start Next.js dev server |
+| `npm run build` | Build both packages |
+| `npm run lint` | Lint all packages |
 
 ## License
 
-MIT
+AGPL-3.0 (via Hexabot)

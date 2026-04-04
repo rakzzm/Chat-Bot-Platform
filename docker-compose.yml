@@ -1,28 +1,70 @@
+version: "3.9"
+
 services:
-  backend:
-    build: .
+  api:
+    container_name: chatbot-api
+    build:
+      context: ./packages/backend
+      target: development
     ports:
-      - "3001:3001"
-    environment:
-      - DATABASE_URL=file:./data/dev.db
-      - PORT=3001
-      - JWT_SECRET=${JWT_SECRET:-change-me}
-      - FRONTEND_URL=http://localhost:5173
-      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - "${API_PORT:-4000}:3000"
+      - "9229:9229"
+    env_file: .env
+    networks:
+      - db-network
+      - app-network
     volumes:
-      - db-data:/app/data
-    restart: unless-stopped
+      - ./packages/backend/src:/app/src
+      - ./packages/backend/test:/app/test
+      - api-data:/app/uploads
+    depends_on:
+      mongo:
+        condition: service_healthy
+    healthcheck:
+      test: "wget --spider http://localhost:3000 || exit 1"
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
   frontend:
+    container_name: chatbot-frontend
     build:
-      context: .
-      dockerfile: Dockerfile.frontend
+      context: ./packages/frontend
+      target: development
     ports:
-      - "5173:5173"
+      - "${APP_FRONTEND_PORT:-8080}:8080"
+    env_file: .env
+    networks:
+      - app-network
+    volumes:
+      - ./packages/frontend:/app
     depends_on:
-      - backend
-    restart: unless-stopped
+      api:
+        condition: service_healthy
+
+  mongo:
+    container_name: chatbot-mongo
+    image: mongo:7.0
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-dev_only}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-dev_only}
+    networks:
+      - db-network
+    healthcheck:
+      test: echo 'db.stats().ok' | mongosh localhost:27017 --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+    volumes:
+      - mongo-data:/data/db
 
 volumes:
-  db-data:
+  mongo-data:
+  api-data:
+
+networks:
+  db-network:
+  app-network:

@@ -1,35 +1,28 @@
 {
   "name": "chat-bot-platform",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
-  "description": "AI-powered chat bot platform builder for SMEs",
+  "description": "AI-powered chat bot platform builder for SMEs — powered by Hexabot",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:backend": "npm run dev --workspace=@chat-bot-platform/backend",
-    "dev:frontend": "npm run dev --workspace=@chat-bot-platform/frontend",
+    "dev:backend": "npm run start:dev --workspace=hexabot",
+    "dev:frontend": "npm run dev --workspace=hexabot-ui",
     "build": "npm run build --workspaces --if-present",
-    "build:backend": "npm run build --workspace=@chat-bot-platform/backend",
-    "build:frontend": "npm run build --workspace=@chat-bot-platform/frontend",
-    "start": "npm run start --workspace=@chat-bot-platform/backend",
+    "build:backend": "npm run build --workspace=hexabot",
+    "build:frontend": "npm run build --workspace=hexabot-ui",
+    "start": "npm run start:prod --workspace=hexabot",
     "lint": "npm run lint --workspaces --if-present",
-    "db:generate": "npm run db:generate --workspace=@chat-bot-platform/backend",
-    "db:push": "npm run db:push --workspace=@chat-bot-platform/backend",
-    "db:migrate": "npm run db:migrate --workspace=@chat-bot-platform/backend",
+    "typecheck": "npm run typecheck --workspaces --if-present",
     "setup": "node setup.js"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.2.1",
-    "autoprefixer": "^10.4.17",
-    "concurrently": "^8.2.2",
-    "postcss": "^8.4.35",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5.9.3",
-    "vite": "^5.1.0"
+    "@nestjs/cli": "^10.0.0",
+    "concurrently": "^8.2.2"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": "^20.18.1"
   }
 }
