@@ -12,8 +12,15 @@ model User {
   email         String         @unique
   password      String
   name          String
+  role          String         @default("user")
   bots          Bot[]
   conversations Conversation[]
+  subscribers   Subscriber[]
+  flows         Flow[]
+  nluIntents    NluIntent[]
+  nluEntities   NluEntity[]
+  knowledgeBases KnowledgeBase[]
+  contextVars   ContextVariable[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 }
@@ -24,11 +31,12 @@ model Bot {
   description  String?
   systemPrompt String?
   avatar       String?
-  model        String         @default("gpt-3.5-turbo")
+  model        String         @default("qwen/qwen3.6-plus:free")
   settings     String?
   userId       String
   user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   conversations Conversation[]
+  flows        Flow[]
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
 }
@@ -40,6 +48,10 @@ model Conversation {
   bot       Bot       @relation(fields: [botId], references: [id], onDelete: Cascade)
   userId    String
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscriberId String?
+  subscriber Subscriber? @relation(fields: [subscriberId], references: [id], onDelete: SetNull)
+  status    String    @default("active")
+  assignedTo String?
   messages  Message[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -49,7 +61,129 @@ model Message {
   id             String       @id @default(uuid())
   role           String
   content        String
+  metadata       String?
   conversationId String
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   createdAt      DateTime     @default(now())
+}
+
+// Flow / Visual Editor
+model Flow {
+  id          String     @id @default(uuid())
+  label       String
+  botId       String
+  bot         Bot        @relation(fields: [botId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isStart     Boolean    @default(false)
+  nodes       FlowNode[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model FlowNode {
+  id          String     @id @default(uuid())
+  flowId      String
+  flow        Flow       @relation(fields: [flowId], references: [id], onDelete: Cascade)
+  type        String     // text, quickReplies, buttons, attachment, list, capture, condition, apiCall, setVariable, gotoFlow
+  positionX   Float      @default(0)
+  positionY   Float      @default(0)
+  data        String     // JSON: { content, buttons, quickReplies, variableName, condition, etc. }
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  sourceConnections FlowConnection[] @relation("SourceConnection")
+  targetConnections FlowConnection[] @relation("TargetConnection")
+}
+
+model FlowConnection {
+  id           String     @id @default(uuid())
+  sourceNodeId String
+  sourceNode   FlowNode   @relation("SourceConnection", fields: [sourceNodeId], references: [id], onDelete: Cascade)
+  targetNodeId String
+  targetNode   FlowNode   @relation("TargetConnection", fields: [targetNodeId], references: [id], onDelete: Cascade)
+  label        String?    // e.g., "Yes", "No", button text
+  createdAt    DateTime   @default(now())
+}
+
+// Subscribers & Labels
+model Subscriber {
+  id          String     @id @default(uuid())
+  firstName   String?
+  lastName    String?
+  channel     String     @default("web")
+  gender      String?
+  locale      String?
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  labels      Label[]
+  conversations Conversation[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Label {
+  id          String     @id @default(uuid())
+  title       String
+  name        String     @unique
+  description String?
+  subscribers Subscriber[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+// NLU
+model NluIntent {
+  id          String     @id @default(uuid())
+  name        String
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  examples    String     // JSON array of training phrases
+  responses   String?    // JSON array of responses
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model NluEntity {
+  id          String     @id @default(uuid())
+  name        String
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  values      String     // JSON array of entity values
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+// Knowledge Base
+model KnowledgeBase {
+  id          String     @id @default(uuid())
+  title       String
+  contentType String     // faq, product, service, custom
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fields      String     // JSON schema of custom fields
+  entries     String     // JSON array of content entries
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+// Context Variables
+model ContextVariable {
+  id          String     @id @default(uuid())
+  name        String
+  permanent   Boolean    @default(false)
+  defaultValue String?
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+// Analytics
+model AnalyticsEvent {
+  id          String     @id @default(uuid())
+  eventType   String     // conversation_started, message_sent, message_received, flow_completed, fallback_triggered
+  botId       String?
+  userId      String
+  metadata    String?    // JSON
+  createdAt   DateTime   @default(now())
 }

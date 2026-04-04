@@ -9,6 +9,11 @@ import { connectDB } from './utils/database';
 import { authRouter } from './routes/auth';
 import { botRouter } from './routes/bots';
 import { conversationRouter } from './routes/conversations';
+import { flowRouter } from './routes/flows';
+import { subscriberRouter } from './routes/subscribers';
+import { nluRouter } from './routes/nlu';
+import { cmsRouter } from './routes/cms';
+import { analyticsRouter } from './routes/analytics';
 import { setupWebSocket } from './websocket';
 
 dotenv.config();
@@ -26,6 +31,11 @@ app.use(express.json());
 app.use('/api/auth', authRouter);
 app.use('/api/bots', botRouter);
 app.use('/api/conversations', conversationRouter);
+app.use('/api', flowRouter);
+app.use('/api', subscriberRouter);
+app.use('/api', nluRouter);
+app.use('/api', cmsRouter);
+app.use('/api', analyticsRouter);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
