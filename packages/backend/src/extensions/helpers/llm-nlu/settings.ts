@@ -17,7 +17,7 @@ export default [
   {
     group: LLM_NLU_HELPER_NAMESPACE,
     label: 'model',
-    value: '',
+    value: 'qwen/qwen-2.5-72b-instruct',
     type: SettingType.text,
   },
   {

@@ -39,7 +39,7 @@ export const DEFAULT_SETTINGS = [
   {
     group: 'chatbot_settings',
     label: 'default_llm_helper',
-    value: 'ollama-helper',
+    value: 'openrouter-llm-helper',
     type: SettingType.select,
     config: {
       multiple: false,

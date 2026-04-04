@@ -1,0 +1,5 @@
+{
+  "api_key": "Enter your OpenRouter API key",
+  "base_url": "The base URL for OpenRouter API (default: https://openrouter.ai/api/v1)",
+  "default_model": "The default AI model to use (e.g., qwen/qwen-2.5-72b-instruct)"
+}
