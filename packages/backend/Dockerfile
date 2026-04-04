@@ -6,7 +6,7 @@ COPY package*.json ./
 
 COPY patches ./patches
 
-RUN npm ci
+RUN npm install
 
 COPY . .
 
@@ -42,7 +42,7 @@ COPY --from=builder /app/src/extensions ./src/extensions
 
 COPY --from=builder /app/patches ./patches
 
-RUN npm ci --only=production
+RUN npm install --only=production
 
 COPY --from=builder /app/dist ./dist
 
