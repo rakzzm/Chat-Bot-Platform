@@ -7,14 +7,17 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\" \"npm run dev:widget\"",
     "dev:backend": "npm run start:dev --workspace=hexabot",
     "dev:frontend": "npm run dev --workspace=hexabot-ui",
+    "dev:widget": "npm run dev --workspace=hexabot-chat-widget",
     "build": "npm run build --workspaces --if-present",
     "build:backend": "npm run build --workspace=hexabot",
     "build:frontend": "npm run build --workspace=hexabot-ui",
+    "build:widget": "npm run build --workspace=hexabot-chat-widget",
     "start": "npm run start:prod --workspace=hexabot",
     "lint": "npm run lint --workspaces --if-present",
+    "lint:fix": "npm run lint:fix --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "setup": "node setup.js"
   },
