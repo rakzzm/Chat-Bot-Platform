@@ -643,6 +643,7 @@
     "audience": "Audience",
     "popular_blocks": "Blocs populaires",
     "no_data": "Il n'y a pas assez de données pour l'instant",
+    "no_data_hint": "Les analyses apparaîtront ici une fois que votre chatbot commencera à recevoir des conversations",
     "loading": "Chargement",
     "desc": {
       "messages": "Affiche la quantité des messages entrants et sortants gérés par votre chatbot. Cliquez sur les légendes pour filtrer les résultats.",

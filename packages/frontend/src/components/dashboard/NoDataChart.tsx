@@ -27,9 +27,16 @@ export const NoDataChart = () => {
   const { t } = useTranslate();
 
   return (
-    <StyledMessage>
-      <FontAwesomeIcon icon={faChartLine} />
-      {t("charts.no_data")}
-    </StyledMessage>
+    <div style={{ textAlign: "center", padding: "2rem 1rem" }}>
+      <StyledMessage style={{ marginBottom: "0.5rem" }}>
+        <FontAwesomeIcon icon={faChartLine} size="2x" />
+      </StyledMessage>
+      <StyledMessage style={{ fontSize: "1rem", marginBottom: "0.25rem" }}>
+        {t("charts.no_data")}
+      </StyledMessage>
+      <Typography variant="body2" color="grey.500">
+        {t("charts.no_data_hint")}
+      </Typography>
+    </div>
   );
 };

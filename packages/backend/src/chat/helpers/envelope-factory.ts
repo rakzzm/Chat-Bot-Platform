@@ -31,6 +31,9 @@ import { StdQuickReply } from '../schemas/types/quick-reply';
 import { getEnvelopeBuilder } from './envelope-builder';
 
 export class EnvelopeFactory {
+  private static readonly templateCache = new Map<string, HandlebarsTemplateDelegate>();
+  private static readonly MAX_CACHE_SIZE = 1000;
+
   constructor(
     protected readonly context: Context,
     protected readonly settings: Settings,
@@ -63,7 +66,6 @@ export class EnvelopeFactory {
    *
    * @param text - Text message
    * @param context - Object holding context variables relative to the conversation (temporary)
-   * @param subscriberContext - Object holding context values relative to the subscriber (permanent)
    * @param settings - Settings Object
    *
    * @returns Text message with the tokens being replaced
@@ -79,10 +81,23 @@ export class EnvelopeFactory {
       contact: { ...settings.contact },
     };
 
-    // Compile and run the Handlebars template
-    const compileTemplate = Handlebars.compile(
-      EnvelopeFactory.toHandlebars(text),
-    );
+    let compileTemplate = this.templateCache.get(text);
+
+    if (!compileTemplate) {
+      // Compile the Handlebars template
+      compileTemplate = Handlebars.compile(EnvelopeFactory.toHandlebars(text));
+
+      // Manage cache size
+      if (this.templateCache.size >= this.MAX_CACHE_SIZE) {
+        const firstKey = this.templateCache.keys().next().value;
+        if (firstKey !== undefined) {
+          this.templateCache.delete(firstKey);
+        }
+      }
+
+      this.templateCache.set(text, compileTemplate);
+    }
+
     return compileTemplate(templateContext);
   }
 

@@ -62,18 +62,12 @@ export class SocketEventDispatcherService implements OnModuleInit {
 
     try {
       const handlers = this.routeHandlers[socketMethod];
-      const foundHandler = Array.from(handlers.entries()).find(([key, _]) => {
-        const urlPathname = new URL(req.url, 'http://localhost').pathname;
-        const keyUrlPathName = new URL(key, 'http://localhost').pathname;
+      const urlPathname = new URL(req.url, 'http://localhost').pathname;
+      const handler = handlers.get(urlPathname);
 
-        return urlPathname === keyUrlPathName;
-      });
-
-      if (!foundHandler) {
+      if (!handler) {
         return res.status(HttpStatus.NOT_FOUND).send({ message: 'Not Found' });
       }
-
-      const [_, handler] = foundHandler;
 
       await new Promise<Error | void>(async (resolve, reject) => {
         req.session.reload((error) => {
@@ -127,15 +121,17 @@ export class SocketEventDispatcherService implements OnModuleInit {
           throw new Error(`Invalid event type: ${event.socketMethod}`);
         }
 
-        if (this.routeHandlers[event.socketMethod].has(event.path)) {
+        const normalizedPath = new URL(event.path, 'http://localhost').pathname;
+
+        if (this.routeHandlers[event.socketMethod].has(normalizedPath)) {
           throw new Error(
-            `Duplicate event: ${event.socketMethod} ${event.path}`,
+            `Duplicate event: ${event.socketMethod} ${normalizedPath} (original: ${event.path})`,
           );
         }
 
         // add event handler
         this.routeHandlers[event.socketMethod].set(
-          event.path,
+          normalizedPath,
           // bind the method to the instance
           event.method.bind(instance),
         );

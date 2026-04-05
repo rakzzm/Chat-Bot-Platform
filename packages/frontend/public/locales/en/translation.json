@@ -642,6 +642,7 @@
     "audience": "Audience",
     "popular_blocks": "Popular Blocks",
     "no_data": "There is not enough data for now",
+    "no_data_hint": "Analytics will appear here once your chatbot starts receiving conversations",
     "loading": "Loading",
     "desc": {
       "messages": "Shows the amount of incoming and outgoing messages handled by your chatbot. Please consider clicking on the legends to filter the results.",

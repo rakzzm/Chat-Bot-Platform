@@ -69,6 +69,9 @@ export class BlockService extends BaseService<
     super(repository);
   }
 
+  private static readonly regexCache = new Map<string, RegExp>();
+  private static readonly MAX_REGEX_CACHE_SIZE = 1000;
+
   /**
    * Full-text search for blocks. Searches for blocks matching the given query string.
    *
@@ -284,7 +287,19 @@ export class BlockService extends BaseService<
         pattern.endsWith('/') &&
         pattern.startsWith('/')
       ) {
-        return new RegExp(pattern.slice(1, -1), 'i');
+        let regex = BlockService.regexCache.get(pattern);
+        if (!regex) {
+          regex = new RegExp(pattern.slice(1, -1), 'i');
+
+          if (BlockService.regexCache.size >= BlockService.MAX_REGEX_CACHE_SIZE) {
+            const firstKey = BlockService.regexCache.keys().next().value;
+            if (firstKey !== undefined) {
+              BlockService.regexCache.delete(firstKey);
+            }
+          }
+          BlockService.regexCache.set(pattern, regex);
+        }
+        return regex;
       }
       return pattern;
     });

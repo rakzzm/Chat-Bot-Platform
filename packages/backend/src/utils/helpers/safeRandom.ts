@@ -8,13 +8,17 @@
 
 import crypto from 'crypto';
 
+const randomValues = new Uint32Array(1);
+
 /**
  * Return a cryptographically secure random value between 0 and 1
  *
  * @returns A cryptographically secure random value between 0 and 1
  */
-export const getRandom = (): number =>
-  crypto.getRandomValues(new Uint32Array(1))[0] / 2 ** 32;
+export const getRandom = (): number => {
+  crypto.getRandomValues(randomValues);
+  return randomValues[0] / 2 ** 32;
+};
 
 /**
  * Return a randomly picked item of the array
