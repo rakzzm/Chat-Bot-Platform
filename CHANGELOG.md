@@ -17,6 +17,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 - Improved socket event dispatcher routing with direct Map lookups
 - Enhanced dashboard NoDataChart with hint text and larger icon
+- Rebranded widget build output: `hexabot-widget.umd.js` → `megh-widget.umd.js`
+- Rebranded widget library name: `HexabotWidget` → `MeghWidget`
+- Updated backend and widget package.json descriptions to Megh EngageX
 
 ### Performance
 - Added Handlebars template cache in EnvelopeFactory (max 1000 entries)
