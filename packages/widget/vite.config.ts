@@ -25,8 +25,8 @@ export default defineConfig(({ mode }) => {
     build: {
       lib: {
         entry: resolve(__dirname, "src/ChatWidget.tsx"),
-        name: "HexabotWidget",
-        fileName: (format) => `hexabot-widget.${format}.js`,
+        name: "MeghWidget",
+        fileName: (format) => `megh-widget.${format}.js`,
         cssFileName: "style",
       },
       rollupOptions: {
