@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `setup.js` for automated project initialization
 - CONTRIBUTING.md with development guide
 - Widget dev script in root package.json
+- Multi-size favicon.ico (16x16, 32x32) generated from Megh EngageX logo
 
 ### Changed
 - Improved socket event dispatcher routing with direct Map lookups
