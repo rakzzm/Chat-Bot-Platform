@@ -1,0 +1,12 @@
+apiVersion: 1
+
+providers:
+  - name: 'Megh EngageX Dashboards'
+    orgId: 1
+    folder: 'Megh EngageX'
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards
+      foldersFromFilesStructure: false
