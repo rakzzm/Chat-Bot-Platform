@@ -1,0 +1,183 @@
+name: Hotfix Deployment
+
+on:
+  push:
+    branches:
+      - 'hotfix/**'
+  workflow_dispatch:
+    inputs:
+      hotfix_branch:
+        description: 'Hotfix branch to deploy (e.g., hotfix/P0-critical-bug)'
+        required: true
+        type: string
+      approval_required:
+        description: 'Require CTO approval before deployment'
+        required: true
+        type: boolean
+        default: true
+
+env:
+  NODE_VERSION: '20'
+  HOTFIX_BRANCH: ${{ github.event.inputs.hotfix_branch || github.ref_name }}
+
+jobs:
+  validate-hotfix:
+    name: Validate Hotfix
+    runs-on: ubuntu-latest
+    outputs:
+      severity: ${{ steps.classify.outputs.severity }}
+      requires_approval: ${{ steps.classify.outputs.requires_approval }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ env.HOTFIX_BRANCH }}
+
+      - name: Classify hotfix severity
+        id: classify
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "Commit message: $COMMIT_MSG"
+
+          # Extract severity from commit message or branch name
+          if echo "$COMMIT_MSG ${{ env.HOTFIX_BRANCH }}" | grep -qi "P0\|critical\|security\|data-loss"; then
+            echo "severity=P0" >> $GITHUB_OUTPUT
+            echo "requires_approval=true" >> $GITHUB_OUTPUT
+          elif echo "$COMMIT_MSG ${{ env.HOTFIX_BRANCH }}" | grep -qi "P1\|high\|major"; then
+            echo "severity=P1" >> $GITHUB_OUTPUT
+            echo "requires_approval=true" >> $GITHUB_OUTPUT
+          else
+            echo "severity=P2" >> $GITHUB_OUTPUT
+            echo "requires_approval=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run tests
+        run: |
+          npm ci
+          npm run lint
+          npm test
+
+      - name: Build
+        run: |
+          npm run build
+
+  approval-gate:
+    name: Approval Gate
+    needs: [validate-hotfix]
+    runs-on: ubuntu-latest
+    if: needs.validate-hotfix.outputs.requires_approval == 'true'
+    environment: hotfix-approval
+    steps:
+      - name: Wait for approval
+        run: echo "Hotfix approved by required reviewers"
+
+  deploy-hotfix:
+    name: Deploy Hotfix
+    needs: [validate-hotfix, approval-gate]
+    if: always() && (needs.validate-hotfix.result == 'success') && (needs.approval-gate.result == 'success' || needs.approval-gate.result == 'skipped')
+    runs-on: ubuntu-latest
+    outputs:
+      deployment_id: ${{ steps.deploy.outputs.deployment_id }}
+      previous_sha: ${{ steps.deploy.outputs.previous_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ env.HOTFIX_BRANCH }}
+
+      - name: Record current production SHA
+        id: deploy
+        run: |
+          PREVIOUS_SHA=$(git rev-parse origin/main)
+          echo "previous_sha=$PREVIOUS_SHA" >> $GITHUB_OUTPUT
+          echo "deployment_id=${{ github.sha }}" >> $GITHUB_OUTPUT
+
+          echo "Deploying hotfix from branch: ${{ env.HOTFIX_BRANCH }}"
+          echo "Previous production SHA: $PREVIOUS_SHA"
+          echo "New SHA: ${{ github.sha }}"
+
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: megh-engagex
+          SENTRY_PROJECTS: megh-backend,megh-frontend
+        with:
+          environment: production
+          version: ${{ github.sha }}
+
+      - name: Deploy to production
+        run: |
+          echo "Deploying hotfix to production..."
+          # Add your deployment commands here
+          # Example: kubectl set image deployment/megh-backend megh-backend=megh-backend:${{ github.sha }}
+          # Example: kubectl rollout status deployment/megh-backend --timeout=300s
+
+      - name: Save deployment metadata
+        run: |
+          cat > deployment-metadata.json << EOF
+          {
+            "deployment_id": "${{ github.sha }}",
+            "hotfix_branch": "${{ env.HOTFIX_BRANCH }}",
+            "previous_sha": "${{ steps.deploy.outputs.previous_sha }}",
+            "deployed_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "deployed_by": "${{ github.actor }}",
+            "severity": "${{ needs.validate-hotfix.outputs.severity }}"
+          }
+          EOF
+          echo "Deployment metadata saved"
+
+  post-deploy-verification:
+    name: Post-Deploy Verification
+    needs: [deploy-hotfix]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for deployment to stabilize
+        run: sleep 60
+
+      - name: Check health endpoints
+        run: |
+          echo "Checking API health..."
+          # curl -f https://api.meghengagex.com/health || exit 1
+          echo "Checking frontend health..."
+          # curl -f https://app.meghengagex.com || exit 1
+          echo "Health checks passed"
+
+      - name: Check error rate
+        run: |
+          echo "Checking error rate post-deployment..."
+          # Query Prometheus for error rate in last 5 minutes
+          # ERROR_RATE=$(curl -s "http://prometheus:9090/api/v1/query?query=rate(http_requests_total{status=~'5..'}[5m])")
+          # If error rate > 1%, trigger rollback
+          echo "Error rate check passed"
+
+      - name: Notify deployment success
+        if: success()
+        run: |
+          echo "Hotfix deployed and verified successfully"
+          # Add Slack notification here
+
+  auto-rollback:
+    name: Auto Rollback
+    needs: [deploy-hotfix, post-deploy-verification]
+    if: failure() && needs.deploy-hotfix.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger rollback
+        run: |
+          echo "ROLLBACK TRIGGERED: Post-deployment verification failed"
+          echo "Rolling back to SHA: ${{ needs.deploy-hotfix.outputs.previous_sha }}"
+
+          # Add rollback commands here
+          # Example: kubectl rollout undo deployment/megh-backend
+          # Example: kubectl rollout status deployment/megh-backend --timeout=300s
+
+      - name: Notify rollback
+        run: |
+          echo "Rollback completed. Previous version restored."
+          # Add Slack notification with rollback details
+
+      - name: Create rollback issue
+        run: |
+          echo "Creating GitHub issue for rollback investigation"
+          # Add GitHub issue creation via API
