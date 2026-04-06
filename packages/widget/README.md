@@ -1,19 +1,19 @@
-# Hexabot Live Chat Widget
+# Megh EngageX Live Chat Widget
 
-The [Hexabot](https://hexabot.ai/) Live Chat Widget is a React-based embeddable widget that allows users to integrate real-time chat functionality into their websites. It connects to the Hexabot API and facilitates seamless interaction between end-users and chatbots across multiple channels.
+The [Megh EngageX](https://github.com/rakzzm/Chat-Bot-Platform) Live Chat Widget is a React-based embeddable widget that allows users to integrate real-time chat functionality into their websites. It connects to the Megh EngageX API and facilitates seamless interaction between end-users and chatbots across multiple channels.
 
-[Hexabot](https://hexabot.ai/) is an open-source chatbot / agent solution that allows users to create and manage AI-powered, multi-channel, and multilingual chatbots with ease. If you would like to learn more, please visit the [official github repo](https://github.com/Hexastack/Hexabot/).
+Megh EngageX is an AI-powered chatbot platform that allows users to create and manage conversational bots with ease. Built on the open-source [Hexabot](https://github.com/Hexastack/Hexabot/) foundation by Hexastack.
 
 ## Key Features
 
 - **Real-Time Chat:** Engage in real-time conversations with users directly through your website.
 - **Customizable:** Easily customize the widget's appearance and behavior to fit your brand and website.
-- **Multi-Channel Support:** Integrates with multiple messaging platforms through the Hexabot API.
+- **Multi-Channel Support:** Integrates with multiple messaging platforms through the Megh EngageX API.
 - **Embeddable:** Simple to embed and integrate into any web page with just a few lines of code.
 
 ## Directory Structure
 
-The Hexabot Live Chat Widget is organized into the following directory structure, under `src` we have:
+The Megh EngageX Live Chat Widget is organized into the following directory structure, under `src` we have:
 
 - **src/assets:** Static assets like icons, fonts, and images used in the widget.
 - **src/components:** Reusable React components that make up the chat widget interface, such as message bubbles, input fields, and buttons.
@@ -58,14 +58,14 @@ Once the widget is built, you can easily embed it into any webpage. Here's an ex
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <link rel="stylesheet" href="./style.css">
-<script src="<<WIDGET URL>>/hexabot-widget.umd.js"></script>
+<script src="<<WIDGET URL>>/megh-widget.umd.js"></script>
 
 <div id="hb-chat-widget"></div>
 <script>
   const el = React.createElement;
   const domContainer = document.getElementById('hb-chat-widget');
   ReactDOM.render(
-    el(HexabotWidget, {
+    el(MeghWidget, {
       apiUrl: 'https://api.yourdomain.com',
       channel: 'web-channel',
       token: 'token123',
@@ -82,7 +82,7 @@ To prevent the website css from conflicting with the chat widget css, we can lev
 ```js
 <script crossorigin src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="<<WIDGET URL>>/hexabot-widget.umd.js"></script>
+<script src="<<WIDGET URL>>/megh-widget.umd.js"></script>
 
 <div id="hb-chat-widget"></div>
 <script>
@@ -102,7 +102,7 @@ To prevent the website css from conflicting with the chat widget css, we can lev
 
   // Render the widget inside the shadow root
   ReactDOM.render(
-    React.createElement(HexabotWidget, {
+    React.createElement(MeghWidget, {
       apiUrl: 'https://api.yourdomain.com',
       channel: 'web-channel',
       token: 'token123',
