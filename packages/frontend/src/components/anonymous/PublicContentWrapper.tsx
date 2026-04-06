@@ -18,7 +18,17 @@ export const PublicContentWrapper: FC<PublicContentWrapperProps> = ({
   const { isAuthenticated } = useAuth();
 
   return (
-    <Grid container justifyContent="center">
+    <Grid
+      container
+      justifyContent="center"
+      alignItems="center"
+      sx={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        backgroundAttachment: "fixed",
+        p: 3,
+      }}
+    >
       {isAuthenticated ? <CircularProgress /> : children}
     </Grid>
   );

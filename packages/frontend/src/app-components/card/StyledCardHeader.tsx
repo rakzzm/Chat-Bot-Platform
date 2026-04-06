@@ -30,7 +30,7 @@ export const StyledCardHeader = ({
   title: string;
   description: string;
 }) => (
-  <Grid p={3}>
+  <Grid p={3} pb={1}>
     <StyledCardTitle>{title}</StyledCardTitle>
     <StyledCardDescription>{description}</StyledCardDescription>
   </Grid>

@@ -140,15 +140,24 @@ export const Register = () => {
     <PublicContentWrapper>
       <Paper
         sx={{
-          width: { xs: "100%", md: "33%" },
-          p: 2,
+          width: { xs: "100%", sm: "85%", md: "480px" },
+          p: 4,
+          background: "rgba(255, 255, 255, 0.72)",
+          backdropFilter: "blur(24px) saturate(180%)",
+          WebkitBackdropFilter: "blur(24px) saturate(180%)",
+          border: "1px solid rgba(255, 255, 255, 0.6)",
+          boxShadow: "0 16px 48px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04)",
+          borderRadius: "24px",
         }}
       >
         <form onSubmit={handleSubmit(onSubmitForm)}>
-          <ContentContainer>
+          <ContentContainer gap={2}>
             <ContentItem>
-              <Typography variant="h1" fontSize="19px" fontWeight={700}>
+              <Typography variant="h1" fontSize="28px" fontWeight={700} textAlign="center" sx={{ mb: 0.5 }}>
                 {t("title.register")}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" textAlign="center">
+                Create your account to get started
               </Typography>
             </ContentItem>
             <ContentItem>
@@ -251,6 +260,7 @@ export const Register = () => {
                     endIcon={<KeyboardArrowRightIcon />}
                     onClick={handleSubmit(onSubmitForm)}
                     disabled={isLoading || !isTermsAccepted}
+                    sx={{ px: 4 }}
                   >
                     {t("button.register")}
                   </Button>

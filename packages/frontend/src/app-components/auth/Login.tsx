@@ -91,11 +91,25 @@ export const Login = () => {
 
   return (
     <PublicContentWrapper>
-      <Paper sx={{ width: { xs: "100%", md: "33%" }, p: 2 }}>
+      <Paper
+        sx={{
+          width: { xs: "100%", sm: "85%", md: "420px" },
+          p: 4,
+          background: "rgba(255, 255, 255, 0.72)",
+          backdropFilter: "blur(24px) saturate(180%)",
+          WebkitBackdropFilter: "blur(24px) saturate(180%)",
+          border: "1px solid rgba(255, 255, 255, 0.6)",
+          boxShadow: "0 16px 48px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04)",
+          borderRadius: "24px",
+        }}
+      >
         <form onSubmit={handleSubmit(onSubmitForm)}>
-          <ContentContainer gap={2}>
-            <Typography variant="h1" fontSize="19px" fontWeight={700}>
+          <ContentContainer gap={3}>
+            <Typography variant="h1" fontSize="28px" fontWeight={700} textAlign="center" sx={{ mb: 0.5 }}>
               {t("title.login")}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" textAlign="center" sx={{ mb: 2 }}>
+              Welcome back — sign in to continue
             </Typography>
             <Input
               label={t("placeholder.email")}
@@ -119,10 +133,10 @@ export const Login = () => {
               helperText={errors.password ? errors.password.message : null}
               {...register("password", validationRules.password)}
             />
-            <Grid container gap={2} justifyContent="space-between">
+            <Grid container gap={2} justifyContent="space-between" alignItems="center">
               <Grid alignContent="center">
                 <Link href="/reset">
-                  <Button variant="text" sx={{ textDecoration: "underline" }}>
+                  <Button variant="text" sx={{ textDecoration: "underline", textTransform: "none", fontWeight: 500 }}>
                     {t("link.reset")}
                   </Button>
                 </Link>
@@ -135,6 +149,7 @@ export const Login = () => {
                   endIcon={<KeyboardArrowRightIcon />}
                   onClick={handleSubmit(onSubmitForm)}
                   disabled={isLoading}
+                  sx={{ px: 4 }}
                 >
                   {t("button.login")}
                 </Button>

@@ -2,8 +2,10 @@ html,
 body {
   padding: 0;
   margin: 0;
-  background: linear-gradient(135deg, #7B1FA2 0%, #87CEEB 100%);
-  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 50%, #f0f4f8 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
@@ -11,24 +13,71 @@ a {
   text-decoration: none;
 }
 
-/* custom scrollbar */
+/* glassmorphism scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f5f6fa;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  backdrop-filter: blur(4px);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 input::-ms-reveal,
 input::-ms-clear {
   display: none;
+}
+
+/* smooth transitions for interactive elements */
+button,
+a,
+.MuiButtonBase-root,
+.MuiListItemButton-root {
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* subtle focus glow for inputs */
+.Mui-focused {
+  transition: all 0.2s ease;
+}
+
+/* glass panel utility */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* smooth page transitions */
+.MuiBox-root,
+.MuiContainer-root {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

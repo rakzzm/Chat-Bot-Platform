@@ -82,11 +82,23 @@ const Drawer = styled(MuiDrawer, {
   borderRadius: "0px",
   ...(open && {
     ...openedMixin(theme),
-    "& .MuiDrawer-paper": openedMixin(theme),
+    "& .MuiDrawer-paper": {
+      ...openedMixin(theme),
+      background: "rgba(255, 255, 255, 0.78)",
+      backdropFilter: "blur(20px) saturate(180%)",
+      WebkitBackdropFilter: "blur(20px) saturate(180%)",
+      borderRight: "1px solid rgba(0, 0, 0, 0.06)",
+    },
   }),
   ...(!open && {
     ...closedMixin(theme, !!ModalProps?.open),
-    "& .MuiDrawer-paper": closedMixin(theme, !!ModalProps?.open),
+    "& .MuiDrawer-paper": {
+      ...closedMixin(theme, !!ModalProps?.open),
+      background: "rgba(255, 255, 255, 0.78)",
+      backdropFilter: "blur(20px) saturate(180%)",
+      WebkitBackdropFilter: "blur(20px) saturate(180%)",
+      borderRight: "1px solid rgba(0, 0, 0, 0.06)",
+    },
   }),
 }));
 const StyledDrawerHeader = styled(DrawerHeader)(() => ({
@@ -94,7 +106,7 @@ const StyledDrawerHeader = styled(DrawerHeader)(() => ({
   zIndex: 1,
   position: "sticky",
   maxHeight: "60px",
-  background: "#fffe",
+  background: "transparent",
 }));
 
 export type MenuItem = {

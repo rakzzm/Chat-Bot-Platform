@@ -43,10 +43,11 @@ const AppBar = styled(MuiAppBar, {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  backgroundColor: theme.palette.common.white,
-  borderRadius: "0px",
-  boxShadow: "none",
-  borderBottom: borderLine,
+  background: "rgba(255, 255, 255, 0.78)",
+  backdropFilter: "blur(20px) saturate(180%)",
+  WebkitBackdropFilter: "blur(20px) saturate(180%)",
+  borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
+  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
   ...(open && {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
@@ -59,13 +60,17 @@ const AppBar = styled(MuiAppBar, {
 const StyledIconButton = styled(IconButton, {
   shouldForwardProp: (prop) => prop !== "isToggled",
 })(({ isToggled }: { isToggled?: boolean }) => ({
-  color: "gray",
+  color: "rgba(0, 0, 0, 0.54)",
   marginRight: "40px",
+  borderRadius: "10px",
+  transition: "all 0.15s ease",
+  "&:hover": {
+    backgroundColor: "rgba(0, 0, 0, 0.06)",
+  },
   ...(isToggled && { display: "none" }),
 }));
 const StyledAppBar = styled(AppBar)(() => ({
   position: "fixed",
-  background: "#fffe",
 }));
 
 export type HeaderProps = {

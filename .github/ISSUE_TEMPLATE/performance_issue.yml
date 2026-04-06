@@ -1,0 +1,55 @@
+name: "Performance Issue"
+description: "Report a performance or stability issue"
+title: "[Performance]: "
+labels: ["performance", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report performance issues to help us improve Megh EngageX.
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Impact Level
+      options:
+        - "P0 - System unusable"
+        - "P1 - Major degradation"
+        - "P2 - Noticeable slowdown"
+        - "P3 - Minor slowdown"
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected Component
+      options:
+        - "Backend API"
+        - "Frontend UI"
+        - "Widget"
+        - "AI/ML Service (Inference)"
+        - "Database"
+        - "Infrastructure/DevOps"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Performance Issue Description
+      description: "Describe the performance issue"
+    validations:
+      required: true
+  - type: textarea
+    id: metrics
+    attributes:
+      label: Metrics/Measurements
+      description: "Provide any performance metrics, response times, or resource usage data"
+      placeholder: |
+        - Expected response time: 
+        - Actual response time: 
+        - CPU/Memory usage: 
+        - Request volume: 
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: "How can we reproduce this performance issue?"

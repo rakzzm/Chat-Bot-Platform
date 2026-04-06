@@ -54,25 +54,31 @@ const StyledListItemButton = styled(ListItemButton, {
 })(({ isHovered, theme }: { isHovered?: boolean } & { theme: Theme }) =>
   SXStyleOptions({
     color: theme.palette.text.secondary,
+    borderRadius: "12px",
+    margin: "2px 8px",
     "&.Mui-selected": {
       color: theme.palette.primary.main,
-      backgroundColor: `${theme.palette.primary.light}61 !important`,
+      backgroundColor: `rgba(26, 160, 137, 0.12) !important`,
+      backdropFilter: "blur(8px)",
+      WebkitBackdropFilter: "blur(8px)",
       "&::before": {
         content: '""',
-        width: "4px",
+        width: "3px",
         position: "absolute",
-        height: "110%",
+        height: "60%",
         backgroundColor: theme.palette.primary.main,
-        left: 0,
-        borderRadius: "0 20px 20px 0",
+        left: "4px",
+        borderRadius: "2px",
+        top: "20%",
       },
     },
     ...(isHovered && {
       backgroundColor: "rgba(0, 0, 0, 0.04)",
     }),
-    minHeight: 56,
-    paddingRight: "20px",
-    paddingLeft: "20px",
+    minHeight: 48,
+    paddingRight: "16px",
+    paddingLeft: "16px",
+    transition: "all 0.15s ease",
   })({ theme }),
 );
 const StyledDivider = styled(Divider)(({ theme }) =>

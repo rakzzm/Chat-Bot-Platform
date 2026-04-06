@@ -43,8 +43,7 @@ declare module "@mui/material/Chip" {
 const defaultTheme = createTheme({});
 const COLOR_PALETTE = {
   black: "#000",
-  purple: "#7B1FA2",
-  skyBlue: "#87CEEB",
+  oceanGreen: "#1AA089",
   oliveGreen: "#96D445",
   lightGray: "#F5F6FA",
   lighterGray: "#f9fafc",
@@ -56,16 +55,18 @@ const COLOR_PALETTE = {
   buttonBorder: "#c0c4cc",
   buttonBorderHover: "#afdb3d",
   buttonBorderFocus: " #04bade",
-  buttonOutlinedColor: "#7B1FA2",
+  buttonOutlinedColor: "#606266",
   buttonOutlinedBorder: "#dcdfe6",
-  buttonOutlinedHover: "#f3e5f5",
+  buttonOutlinedHover: "#eaf4f3",
 };
 const COLORS = {
   primary: {
-    main: "#7B1FA2",
+    main: "#1AA089",
+    light: "#4DD0B8",
+    dark: "#0E7A68",
   },
   secondary: {
-    main: "#87CEEB",
+    main: "#B23A49",
   },
   error: {
     main: "#cc0000",
@@ -76,6 +77,21 @@ const COLORS = {
 };
 
 export const borderLine = `1.5px solid ${COLOR_PALETTE.borderGray}`;
+
+export const glassEffect = {
+  background: "rgba(255, 255, 255, 0.72)",
+  backdropFilter: "blur(20px) saturate(180%)",
+  WebkitBackdropFilter: "blur(20px) saturate(180%)",
+  border: "1px solid rgba(255, 255, 255, 0.5)",
+};
+
+export const glassCard = {
+  background: "rgba(255, 255, 255, 0.65)",
+  backdropFilter: "blur(16px) saturate(160%)",
+  WebkitBackdropFilter: "blur(16px) saturate(160%)",
+  border: "1px solid rgba(255, 255, 255, 0.6)",
+  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)",
+};
 
 export const theme = createTheme({
   typography: {
@@ -92,14 +108,13 @@ export const theme = createTheme({
       default: "#F5F6FA",
     },
     text: {
-      primary: "#7B1FA2",
-      secondary: "#7B1FA2",
+      secondary: "#71839B",
     },
     teal,
     grey,
   },
   shape: {
-    borderRadius: 9,
+    borderRadius: 16,
   },
   components: {
     MuiCard: {
@@ -107,8 +122,8 @@ export const theme = createTheme({
         root: {
           display: "flex",
           flexDirection: "column",
-          borderRadius: "8px",
-          backgroundColor: "#fff",
+          borderRadius: "20px",
+          ...glassCard,
           [defaultTheme.breakpoints.up("sm")]: {
             flex: "auto",
           },
@@ -133,16 +148,20 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           padding: "0.5rem",
-          borderTop: borderLine,
-          backgroundColor: COLOR_PALETTE.lighterGray,
+          borderTop: "1px solid rgba(0, 0, 0, 0.06)",
+          backgroundColor: "rgba(245, 246, 250, 0.5)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
         },
       },
     },
     MuiDialogTitle: {
       styleOverrides: {
         root: {
-          borderBottom: borderLine,
-          backgroundColor: COLOR_PALETTE.lighterGray,
+          borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
+          backgroundColor: "rgba(245, 246, 250, 0.5)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
           color: COLOR_PALETTE.darkCyanBlue,
           fontSize: "18px",
           lineHeight: "1",
@@ -152,6 +171,10 @@ export const theme = createTheme({
     MuiDialog: {
       styleOverrides: {
         root: {
+          "& .MuiDialog-paper": {
+            ...glassCard,
+            borderRadius: "20px",
+          },
           "& .MuiDialogTitle-root .MuiIconButton-root": {
             top: "10px",
             right: "10px",
@@ -169,14 +192,30 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           "& .MuiOutlinedInput-root": {
-            borderRadius: "36px",
-            backgroundColor: "#fff",
+            borderRadius: "14px",
+            backgroundColor: "rgba(255, 255, 255, 0.6)",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+            border: "1px solid rgba(0, 0, 0, 0.08)",
+            transition: "all 0.2s ease",
+            "&:hover": {
+              backgroundColor: "rgba(255, 255, 255, 0.8)",
+              border: "1px solid rgba(0, 0, 0, 0.12)",
+            },
+            "&.Mui-focused": {
+              backgroundColor: "rgba(255, 255, 255, 0.9)",
+              border: "1px solid rgba(26, 160, 137, 0.4)",
+              boxShadow: "0 0 0 3px rgba(26, 160, 137, 0.1)",
+            },
+            "& fieldset": {
+              border: "none",
+            },
           },
           "& .MuiInputBase-multiline ": {
-            borderRadius: "12px",
+            borderRadius: "14px",
           },
           "& .MuiInputBase-input.Mui-disabled": {
-            borderRadius: "36px",
+            borderRadius: "14px",
             backgroundColor: COLOR_PALETTE.disabledGray,
           },
           "& .MuiInputLabel-root.Mui-required": {
@@ -190,27 +229,49 @@ export const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          padding: "7px 15px",
-          borderRadius: "20px",
-          textTransform: "uppercase",
-          fontSize: "14px",
+          padding: "10px 24px",
+          borderRadius: "14px",
+          textTransform: "none",
+          fontSize: "15px",
+          fontWeight: 600,
+          letterSpacing: "0.02em",
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
+          transition: "all 0.2s ease",
+          "&:hover": {
+            boxShadow: "0 4px 16px rgba(0, 0, 0, 0.12)",
+            transform: "translateY(-1px)",
+          },
+        },
+        contained: {
+          boxShadow: "0 4px 12px rgba(26, 160, 137, 0.3)",
+          "&:hover": {
+            boxShadow: "0 6px 20px rgba(26, 160, 137, 0.4)",
+          },
         },
       },
     },
     MuiCssBaseline: {
       styleOverrides: `
+      body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 50%, #f0f4f8 100%);
+        background-attachment: fixed;
+      }
       input:-webkit-autofill,
       input:-webkit-autofill:hover,
       input:-webkit-autofill:focus,
       input:-webkit-autofill:active {
-        -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
+        -webkit-box-shadow: 0 0 0 30px rgba(255, 255, 255, 0.9) inset !important;
+        -webkit-backdrop-filter: blur(10px);
       }`,
     },
     MuiPaper: {
       styleOverrides: {
         root: {
-          borderRadius: "9px",
-          boxShadow: "0px 4px 5.9px 0px rgba(0, 0, 0, 0.04)",
+          borderRadius: "16px",
+          ...glassCard,
+        },
+        elevation1: {
+          boxShadow: "0 2px 12px rgba(0, 0, 0, 0.06)",
         },
       },
     },
@@ -260,6 +321,31 @@ export const theme = createTheme({
               fill: COLOR_PALETTE.buttonOutlinedColor,
             },
           },
+        },
+      },
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backdropFilter: "blur(20px) saturate(180%)",
+          WebkitBackdropFilter: "blur(20px) saturate(180%)",
+        },
+      },
+    },
+    MuiDrawer: {
+      styleOverrides: {
+        paper: {
+          ...glassEffect,
+          borderRight: "1px solid rgba(255, 255, 255, 0.5)",
+        },
+      },
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: "12px",
+          margin: "2px 8px",
+          transition: "all 0.15s ease",
         },
       },
     },

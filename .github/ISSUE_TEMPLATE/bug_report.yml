@@ -1,0 +1,84 @@
+name: "Bug Report"
+description: "Report a bug in Megh EngageX Chat Bot Platform"
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: "Impact level of this bug"
+      options:
+        - "P0 - Critical (System down, data loss, security issue)"
+        - "P1 - High (Major feature broken, no workaround)"
+        - "P2 - Medium (Feature broken, workaround exists)"
+        - "P3 - Low (Cosmetic, minor inconvenience)"
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: "Which part of the platform is affected?"
+      options:
+        - "Backend API"
+        - "Frontend UI"
+        - "Widget"
+        - "AI/ML Service"
+        - "Database"
+        - "Infrastructure/DevOps"
+        - "Other"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: "Clear and concise description of the bug"
+      placeholder: "What happened? What did you expect to happen?"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: "How can we reproduce this issue?"
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: "Please provide environment details"
+      value: |
+        - **Browser/OS**: 
+        - **Megh EngageX Version**: 
+        - **Node.js Version**: 
+        - **Database**: 
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs/Errors
+      description: "Paste any relevant log output or error messages"
+      render: shell
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Workaround
+      description: "Is there a temporary workaround?"
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: "Add screenshots if applicable"
